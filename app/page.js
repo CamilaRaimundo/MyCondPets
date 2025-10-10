@@ -45,6 +45,33 @@ export default function Home() {
             Read our docs
           </a>
         </div>
+        
+        <a
+          className={styles.loginButton}
+          href="/login"
+          style={{
+            backgroundColor: '#0070f3',
+            color: 'white',
+            padding: '20px 40px',
+            fontSize: '24px',
+            borderRadius: '8px',
+            textDecoration: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            marginTop: '40px',
+            fontWeight: 'bold'
+          }}
+        >
+          <Image
+            className={styles.logo}
+            src="/vercel.svg"
+            alt="Vercel logomark"
+            width={24}
+            height={24}
+          />
+          Login
+        </a>
       </main>
       <footer className={styles.footer}>
         <a
