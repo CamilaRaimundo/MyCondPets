@@ -23,7 +23,7 @@ body {
 }
 
 /* Responsividade */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .content {
     flex-direction: column;
     gap: 32px;
@@ -41,5 +41,5 @@ body {
     width: 200px;
     height: 200px;
   }
-}
+} */
 

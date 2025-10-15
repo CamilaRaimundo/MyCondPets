@@ -4,7 +4,7 @@
   color: #1e3a5f;
   display: flex;
   flex-direction: column;
-  min-height: 80.5vh;
+  min-height: 81.3vh;
 }
 
 
@@ -15,8 +15,8 @@
   align-items: center;
   justify-content: center;
   gap: 60px;
-  /* padding: 20px; */
   flex-wrap: wrap;
+  padding: 2%;
 }
 
 .text {
@@ -42,7 +42,6 @@
 
 /* Imagem */
 .image-container {
-  /* background-color: #ffd54f; */
   width: 500px;
   height: 500px;
   border-radius: 50%;
