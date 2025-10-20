@@ -1,0 +1,25 @@
+.login-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    min-height: calc(100vh - var(--header-height, 80px) - var(--footer-height, 60px));
+}
+
+.image-container {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-login {
+    clip-path: circle(50%);
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
