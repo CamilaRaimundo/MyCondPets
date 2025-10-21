@@ -1,53 +1,31 @@
 "use client";
 
-import { signIn, signOut, useSession } from "next-auth/react";
-import Image from "next/image";
-import "./css/login.css";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useSession } from "next-auth/react";
+import AuthLayout from "@/components/authLayout/AuthLayout";
+import LoginComponent from "@/components/login/LoginComponent";
+import "./css/loginPage.css";
 
-export default function Home() {
+
+export default function LoginPage() {
   const { data: session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session) {
+      router.push("/");
+    }
+  }, [session, router]);
 
   return (
-    <div>
-      <div className="login-container">
-        <section>
-          <div className="image-container">
-            <Image
-              src="/images/pet23.jpg"
-              alt="Imagem de um pet"
-              width={300}
-              height={300}
-              className="image-login"
-              priority
-            />
-          </div>
-        </section>
-
-        {!session ? (
-          <section>
-            <h2>Login</h2>
-            <p>Faça login para acessar o sistema de gerenciamento de pets</p>
-            <button onClick={() => signIn("google")}>Entrar com Google</button>
-          </section>
-        ) : (
-          <>
-              <section>
-                <div className="profile-container">
-                  <h2>Bem-vindo, {session.user.name}</h2>
-                  <img
-                    src={session.user.image}
-                    alt="Foto de perfil"
-                    width={50}
-                  />
-                  <p>Email: {session.user.email}</p>
-                  <p>Status: Logado</p>
-                  <p>Sessão iniciada em: {new Date().toLocaleString()}</p>
-                  <button onClick={() => signOut()}>Sair</button>
-                </div>
-              </section>
-          </>
-        )}
-      </div>
+    <div className="login-page-wrapper">
+      <AuthLayout title="Acesse sua Conta">
+        <p className="login-subtitle">
+          Use sua conta do Google para continuar e gerenciar seus pets.
+        </p>
+        <LoginComponent />
+      </AuthLayout>
     </div>
   );
 }
