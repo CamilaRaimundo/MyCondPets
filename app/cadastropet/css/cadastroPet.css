@@ -1,0 +1,155 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+  color: #111;
+}
+
+/* Container principal */
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  padding: 30px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Caixa do dono */
+.dados-dono {
+  background-color: #f1f0eb;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  flex: 0 0 30%;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+/* Título da caixa do dono */
+.dados-dono h2 {
+  margin-top: 0;
+  color: #000000;
+}
+
+/* Caixa de cadastro */
+.cadastro-pet {
+  background-color: #f1f0eb;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Título do cadastro */
+.cadastro-pet h2 {
+  margin-top: 0;
+  color: #000000;
+}
+
+/* Grid do formulário */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  align-items: end;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+}
+
+.campo label {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.campo input[type="text"],
+.campo input[type="number"],
+.campo input[type="file"],
+.campo input[type="date"],
+.campo select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.opcoes-sexo,
+.opcoes-porte {
+  display: flex;
+  gap: 15px;
+  margin-top: 5px;
+}
+
+.botoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-size: 1rem;
+  cursor: pointer;
+  color: white;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.azul {
+  background-color: #45d68e;
+}
+
+.preto {
+  background-color: #d66262;
+}
+
+.btn:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+/* Preview da imagem */
+#preview {
+  margin-top: 10px;
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 8px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dados-dono,
+  .cadastro-pet {
+    width: 90%;
+    max-width: 700px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .botoes {
+    justify-content: center;
+  }
+}
