@@ -1,6 +1,19 @@
+"use client";
+
 import "./styles.css";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
+  const { data: session, status } = useSession();
+
+  if (!session && status === "unauthenticated") {
+    return (
+      <div className="naoLogado">
+        <p>Você precisa estar logado para acessar esta página.</p>
+      </div>
+    )
+  }
+
   return (
     <main className="container">
       {/* Conteúdo principal */}
@@ -29,8 +42,6 @@ export default function Home() {
             aa
           </div>
         </div>
-
-
       </section>
 
     </main>
