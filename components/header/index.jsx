@@ -11,11 +11,11 @@ export function Header() {
   const router = useRouter();
   const pathname = usePathname();
 
-  useEffect(() => {
-    if (session?.user && !session.user.cpf && pathname !== "/perfilDono") {
-      router.push("/perfilDono");
-    }
-  }, [session, pathname, router]);
+  // useEffect(() => {
+  //   if (session?.user && !session.user.cpf && pathname !== "/perfilDono") {
+  //     router.push("/perfilDono");
+  //   }
+  // }, [session, pathname, router]);
 
   if (status === "loading") {
     return (
