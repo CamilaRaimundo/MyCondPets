@@ -16,10 +16,71 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.containe_404{
+/* Estilos para página 404 */
+.container_404 {
   display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  min-height: 80.5vh;
+  background: #fbebd7;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.content_404 {
+  text-align: center;
+  padding: 40px;
+  max-width: 600px;
+}
+
+.number_404 {
+  font-size: 150px;
+  font-weight: bold;
+  color: #1e3a5f;
+  text-shadow: 4px 4px 0px #c5e4dc;
+  margin-bottom: 20px;
+  animation: bounce 1s ease infinite;
+}
+
+.title_404 {
+  font-size: 36px;
+  color: #1e3a5f;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.description_404 {
+  font-size: 18px;
+  color: #5a7491;
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.btn_home {
+  display: inline-block;
+  padding: 14px 32px;
+  background-color: #1e3a5f;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(30, 58, 95, 0.2);
+}
+
+.btn_home:hover {
+  background-color: #2d5278;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(30, 58, 95, 0.3);
 }
 
 /* Responsividade */
