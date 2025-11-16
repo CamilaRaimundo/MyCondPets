@@ -121,6 +121,7 @@ export default function TelaInicialCond() {
       <main className="tela-inicial-main">
         {/* Top Cards Grid */}
         <div className="cards-grid-top">
+          {/* Rota: /pets - Crie: app/pets/page.jsx */}
           <DashboardCard
             icon={Dog}
             title="Pets cadastrados"
@@ -129,6 +130,7 @@ export default function TelaInicialCond() {
             onClick={() => handleNavigation('/pets')}
           />
           
+          {/* Rota: /pets-perdidos - Crie: app/pets-perdidos/page.jsx */}
           <DashboardCard
             icon={AlertCircle}
             title="Pets perdidos"
@@ -138,6 +140,7 @@ export default function TelaInicialCond() {
             alert={data.petsLost > 0}
           />
           
+          {/* Rota: /donos - Crie: app/donos/page.jsx */}
           <DashboardCard
             icon={Bone}
             title="Donos cadastrados"
@@ -149,12 +152,14 @@ export default function TelaInicialCond() {
 
         {/* Bottom Cards Grid */}
         <div className="cards-grid-bottom">
+          {/* Rota: /apartamentos - Crie: app/apartamentos/page.jsx */}
           <InfoCard
             value={data.apartmentsWithPets}
             label="Apartamentos com pets"
             onClick={() => handleNavigation('/apartamentos')}
           />
           
+          {/* Rota: /noticias - Crie: app/noticias/page.jsx */}
           <NewsCard onClick={() => handleNavigation('/noticias')} />
         </div>
       </main>
