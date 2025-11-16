@@ -1,0 +1,387 @@
+/* app/telaInicialCond/css/telaInicial.css */
+
+.tela-inicial-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fff5f0 0%, #e0f2f1 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.loading-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fff5f0 0%, #e0f2f1 100%);
+}
+
+.loading-spinner {
+  width: 4rem;
+  height: 4rem;
+  border: 4px solid #14b8a6;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 1.25rem;
+  color: #4b5563;
+}
+
+/* Header */
+.tela-inicial-header {
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-container {
+  width: 3.5rem;
+  height: 3.5rem;
+  background: linear-gradient(135deg, #fb923c 0%, #14b8a6 100%);
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-icon {
+  width: 2rem;
+  height: 2rem;
+  color: white;
+}
+
+.header-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.header-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.brand-text {
+  color: #0d9488;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+/* Main Content - CORRIGIDO PARA OCUPAR ESPAÇO */
+.tela-inicial-main {
+  flex: 1; /* ← Ocupa todo o espaço disponível */
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* ← Centraliza verticalmente */
+}
+
+.cards-grid-top {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .cards-grid-top {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.cards-grid-bottom {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .cards-grid-bottom {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Dashboard Cards - AUMENTADOS */
+.dashboard-card {
+  border-radius: 1.5rem;
+  padding: 2.5rem 2rem; /* ← Aumentado de 2rem para 2.5rem */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 280px; /* ← Altura mínima maior */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.card-teal {
+  background: linear-gradient(135deg, #5eead4 0%, #14b8a6 100%);
+}
+
+.card-red {
+  background: linear-gradient(135deg, #fca5a5 0%, #ef4444 100%);
+}
+
+.card-dark-teal {
+  background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+}
+
+.alert-icon {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.card-icon {
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1rem;
+  color: white;
+  opacity: 0.8;
+}
+
+.card-value {
+  font-size: 4.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+  opacity: 0.9;
+}
+
+.card-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 9999px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.card-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Info Card - AUMENTADO */
+.info-card {
+  background: linear-gradient(135deg, #99f6e4 0%, #5eead4 100%);
+  border-radius: 1.5rem;
+  padding: 2.5rem 2rem; /* ← Aumentado */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 200px; /* ← Altura mínima */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.info-value {
+  font-size: 3.75rem;
+  font-weight: 700;
+  color: #115e59;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.info-label {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #115e59;
+}
+
+/* News Card - AUMENTADO */
+.news-card {
+  background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+  border-radius: 1.5rem;
+  padding: 2.5rem 2rem; /* ← Aumentado */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  min-height: 200px; /* ← Altura mínima */
+}
+
+.news-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.news-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.news-icon {
+  width: 4rem;
+  height: 4rem;
+  color: #374151;
+}
+
+.news-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.news-button {
+  padding: 0.75rem 1.5rem;
+  background-color: #374151;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.news-button:hover {
+  background-color: #1f2937;
+}
+
+/* Footer - NÃO PRECISA MAIS (usando o footer global) */
+/* .tela-inicial-footer {
+  background: linear-gradient(90deg, #fdba74 0%, #fb923c 100%);
+  margin-top: 3rem;
+  padding: 1rem 0;
+}
+
+.footer-content {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.footer-text {
+  color: white;
+  font-weight: 500;
+  font-size: 1.125rem;
+} */
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tela-inicial-main {
+    padding: 1.5rem 1rem;
+  }
+
+  .header-title {
+    font-size: 1.5rem;
+  }
+
+  .brand-text {
+    font-size: 1.125rem;
+  }
+
+  .dashboard-card {
+    min-height: 240px;
+    padding: 2rem 1.5rem;
+  }
+
+  .card-value {
+    font-size: 3.5rem;
+  }
+
+  .card-title {
+    font-size: 1rem;
+  }
+
+  .info-card,
+  .news-card {
+    min-height: 180px;
+    padding: 2rem 1.5rem;
+  }
+
+  .info-value {
+    font-size: 3rem;
+  }
+
+  .info-label {
+    font-size: 1rem;
+  }
+
+  .news-title {
+    font-size: 2rem;
+  }
+
+  .news-icon {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  /* Em telas grandes, aumenta ainda mais os cards */
+  .dashboard-card {
+    min-height: 320px;
+    padding: 3rem 2.5rem;
+  }
+
+  .info-card,
+  .news-card {
+    min-height: 240px;
+    padding: 3rem 2.5rem;
+  }
+}
