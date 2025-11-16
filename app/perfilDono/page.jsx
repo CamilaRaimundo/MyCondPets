@@ -1,22 +1,20 @@
+"use client";
+import React from "react";
 import "./styles.css";
+
 import pool from "@/app/_lib/db";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import { PetsList } from "./PetsList";
 
-function formatarTelefone(telefone) {
-  if (!telefone) return "";
-  const apenasNumeros = telefone.replace(/\D/g, "");
-  if (apenasNumeros.length === 11)
-    return apenasNumeros.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
-  else if (apenasNumeros.length === 10)
-    return apenasNumeros.replace(/(\d{2})(\d{4})(\d{4})/, "($1) $2-$3");
-  else return telefone;
-}
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
-  if (!session) redirect("/login");
+  if (!session) {
+    redirect("/login");
+    return; // <-- evitar continuar
+  }
 
   const userEmail = session.user.email;
 
@@ -58,7 +56,6 @@ export default async function Home() {
 
   return (
     <main className="content">
-      <script src="https://kit.fontawesome.com/58c0554857.js" crossOrigin="anonymous"></script>
 
       <div className="image-container">
         <img src="../images/pet11.jpg" className="pets-image" />
@@ -77,11 +74,11 @@ export default async function Home() {
           </div>
           <div className="label-info">
             <h1>Apartamento</h1>
-            <input type="text" value={residencia.res_complemento} disabled/>
+            <input type="text" value={residencia.res_complemento} disabled />
           </div>
           <div className="label-info">
             <h1>Contato</h1>
-            <input type="text" value={formatarTelefone(dono?.don_contato)} disabled />
+            <input type="text" value={dono?.don_contato} disabled />
           </div>
         </div>
 
@@ -90,18 +87,7 @@ export default async function Home() {
             <h2>Meus Pets</h2>
           </div>
           <div className="lista-pets">
-            {pets.map((pet, index) => (
-              <div className="pet-item" key={index}>
-                <div className="pet-info">
-                  <span className="icone"><i className="fa-solid fa-paw"></i></span>
-                  <span className="nome">{pet.pet_nome}</span>
-                </div>
-                <div className="acoes">
-                  <button className="btn-delete"><i className="fa-solid fa-square-minus"></i></button>
-                  <button className="btn-edit"><i className="fa-solid fa-pen-to-square"></i></button>
-                </div>
-              </div>
-            ))}
+            <PetsList pets={pets} donoCpf={dono.don_cpf} />
           </div>
           <div className="add-pet">
             <button className="btn-add"><i className="fa-solid fa-circle-plus"></i></button>
