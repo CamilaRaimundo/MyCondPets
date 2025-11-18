@@ -1,144 +1,91 @@
-"use client";
-
-import { useState } from "react";
-import { FaPaw, FaBone, FaCalendar, FaVenusMars, FaArrowsUpDownLeftRight, FaCamera, FaCheck, FaXmark } from "react-icons/fa6";
+import pool from "@/app/_lib/db";
+import FormCadastroPet from "./FormCadastroPet";
 import "./css/cadastroPet.css";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
 
-export default function CadastroPage() {
-  const [preview, setPreview] = useState(null);
-  const [especie, setEspecie] = useState("");
-  const [racas, setRacas] = useState([]);
+export default async function CadastroPage() {
 
-  const racasPorEspecie = {
-    Cachorro: [
-      "Labrador Retriever",
-      "Golden Retriever",
-      "Bulldog Francês",
-      "Poodle",
-      "Beagle",
-      "Rottweiler",
-      "Shih Tzu",
-      "Yorkshire Terrier",
-      "Border Collie",
-      "Outros"
-    ],
-    Gato: [
-      "Persa",
-      "Siamês",
-      "Maine Coon",
-      "Sphynx",
-      "Angorá",
-      "British Shorthair",
-      "Ragdoll",
-      "Bengal",
-      "Himalaio",
-      "Outros"
-    ]
-  };
+  const session = await getServerSession(authOptions);
+  if (!session) redirect("/login");
 
-  const handleEspecieChange = (e) => {
-    const especieSelecionada = e.target.value;
-    setEspecie(especieSelecionada);
-    setRacas(racasPorEspecie[especieSelecionada] || []);
-  };
+  const userEmail = session.user.email;
 
-  const previewImage = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => setPreview(e.target.result);
-      reader.readAsDataURL(file);
-    } else {
-      setPreview(null);
+  // consulta ao banco – só no servidor
+  const client = await pool.connect();
+  let dono = null;
+  let pets = [];
+  let residencia = null;
+
+  try {
+    const donoResult = await client.query(
+      "SELECT don_id, don_nome, don_email, don_contato, don_cpf FROM dono WHERE don_email = $1;",
+      [userEmail]
+    );
+
+    dono = donoResult.rows[0];
+
+    if (dono) {
+      const petsResult = await client.query(
+        "SELECT pet_id, pet_nome, pet_tipo, pet_raca, pet_foto FROM pet WHERE don_id = $1 ORDER BY pet_id DESC;",
+        [dono.don_id]
+      );
+      pets = petsResult.rows;
+
+      const residenciaResult = await client.query(
+        "SELECT res_complemento FROM residencia WHERE don_id = $1;",
+        [dono.don_id]
+      );
+      residencia = residenciaResult.rows[0];
     }
-  };
+
+  } finally {
+    client.release();
+  }
+
+  if (!dono) {
+    return (
+      <main className="container">
+        <p>Erro: Usuário não encontrado no sistema.</p>
+      </main>
+    );
+  }
 
   return (
-    <div>
-      {/* Conteúdo Principal */}
-      <main className="container">
-        <section className="dados-dono">
-          <h2>Informações do Dono</h2>
-          <p><strong>Nome:</strong> Felipe Tagliabues</p>
-          <p><strong>Telefone:</strong> (51) 99999-9999</p>
-          <p><strong>Bloco:</strong> A</p>
-          <p><strong>Apartamento:</strong> 203</p>
+    <main className="container">
+      <section className="dados-dono">
+        <h2>Informações do Dono</h2>
+        <p><strong>Nome:</strong> {dono.don_nome}</p>
+        <p><strong>Telefone:</strong> {dono.don_contato}</p>
+        <p><strong>Apartamento:</strong> {residencia?.res_complemento || "Não informado"}</p>
+      </section>
+
+      <section className="cadastro-pet">
+        <h2>Cadastro do Pet</h2>
+        <FormCadastroPet donoId={dono.don_id} />
+      </section>
+
+      {/* {pets.length > 0 && (
+        <section className="lista-pets">
+          <h2>Pets Cadastrados</h2>
+          <div className="pets-grid">
+            {pets.map((pet) => (
+              <div key={pet.pet_id} className="pet-card">
+                {pet.pet_foto && (
+                  <img 
+                    src={pet.pet_foto} 
+                    alt={pet.pet_nome} 
+                    className="pet-foto"
+                  />
+                )}
+                <h3>{pet.pet_nome}</h3>
+                <p>{pet.pet_tipo} - {pet.pet_raca}</p>
+              </div>
+            ))}
+          </div>
         </section>
-
-        <section className="cadastro-pet">
-          <h2>Cadastro do Pet</h2>
-
-          <form>
-            <div className="form-grid">
-              <div className="campo">
-                <label htmlFor="nome-pet"><FaPaw /> Nome do Pet</label>
-                <input type="text" id="nome-pet" name="nome-pet" placeholder="Ex: Rex" required />
-              </div>
-
-              <div className="campo">
-                <label htmlFor="especie"><FaPaw /> Espécie</label>
-                <select id="especie" name="especie" required onChange={handleEspecieChange}>
-                  <option value="">Selecione...</option>
-                  <option value="Cachorro">Cachorro</option>
-                  <option value="Gato">Gato</option>
-                </select>
-              </div>
-
-              <div className="campo">
-                <label htmlFor="raca"><FaBone /> Raça</label>
-                <select id="raca" name="raca" required disabled={!racas.length}>
-                  <option value="">Selecione...</option>
-                  {racas.map((raca, index) => (
-                    <option key={index} value={raca}>{raca}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="campo">
-                <label htmlFor="data-nascimento"><FaCalendar /> Data de Nascimento Estimada</label>
-                <input type="date" 
-                            id="data-nascimento" 
-                            name="data-nascimento" 
-                            required 
-                            min="2000-01-01" 
-                            max={new Date().toISOString().split("T")[0]}  />
-              </div>
-
-              <div className="campo">
-                <label><FaVenusMars /> Sexo</label>
-                <div className="opcoes-sexo">
-                  <label><input type="radio" name="sexo" value="macho" required /> Macho</label>
-                  <label><input type="radio" name="sexo" value="femea" /> Fêmea</label>
-                </div>
-              </div>
-
-              <div className="campo">
-                <label><FaArrowsUpDownLeftRight /> Porte</label>
-                <div className="opcoes-porte">
-                  <label><input type="radio" name="porte" value="pequeno" required /> Pequeno</label>
-                  <label><input type="radio" name="porte" value="medio" /> Médio</label>
-                  <label><input type="radio" name="porte" value="grande" /> Grande</label>
-                </div>
-              </div>
-
-              <div className="campo">
-                <label htmlFor="foto-pet"><FaCamera /> Foto do Pet</label>
-                <input type="file" id="foto-pet" name="foto-pet" accept="image/*" onChange={previewImage} />
-                {preview && <img src={preview} alt="Pré-visualização do Pet" id="preview" />}
-              </div>
-            </div>
-
-            <div className="botoes">
-              <button type="submit" className="btn azul">
-                <FaCheck /> Cadastrar
-              </button>
-              <button type="reset" className="btn preto">
-                <FaXmark /> Cancelar
-              </button>
-            </div>
-          </form>
-        </section>
-      </main>
-    </div>
+      )} */}
+    </main>
   );
 }

@@ -132,6 +132,46 @@ body {
   display: block;
 }
 
+.mensagem {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.mensagem.sucesso {
+  background: #d4edda;
+  color: #155724;
+}
+
+.mensagem.erro {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.lista-pets {
+  margin-top: 2rem;
+}
+
+.pets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.pet-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.pet-foto {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
 /* Responsividade */
 @media (max-width: 1024px) {
   .container {
