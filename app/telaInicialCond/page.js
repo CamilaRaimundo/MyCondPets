@@ -1,11 +1,11 @@
 "use client";
 
+import React, { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import { Home, Dog, AlertCircle, Bone, Newspaper } from "lucide-react";
+import { Dog, AlertCircle, Bone, Newspaper } from 'lucide-react';
 import "./css/telaInicial.css";
 
+// Componente de Card do Dashboard
 const DashboardCard = ({ icon: Icon, title, value, color, onClick, alert }) => (
   <div
     onClick={onClick}
@@ -44,37 +44,21 @@ const NewsCard = ({ onClick }) => (
   </div>
 );
 
+// Componente Principal
 export default function TelaInicialCond() {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // COMENTADO: Validação de autenticação
-    // if (status === "loading") return;
-    
-    // if (!session) {
-    //   router.push("/login");
-    //   return;
-    // }
-    
-    // Carrega os dados independente de estar logado ou não
     loadData();
-  }, []); // Removido as dependências para evitar loop infinito
+  }, []);
 
   const loadData = async () => {
     try {
       setLoading(true);
       
-      // COMENTADO: Tentativa de buscar da API
-      // const response = await fetch('/api/dashboard');
-      // if (response.ok) {
-      //   const dashboardData = await response.json();
-      //   setData(dashboardData);
-      // } else {
-      
-      // Usa dados mockados direto
+      // Usa dados mockados
       setData({
         totalPets: 34,
         petsLost: 1,
@@ -85,7 +69,6 @@ export default function TelaInicialCond() {
       
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
-      // Usa dados mockados em caso de erro
       setData({
         totalPets: 34,
         petsLost: 1,
@@ -102,8 +85,6 @@ export default function TelaInicialCond() {
     router.push(route);
   };
 
-  // COMENTADO: Validação de loading
-  // if (status === "loading" || loading) {
   if (loading) {
     return (
       <div className="loading-container">
@@ -119,9 +100,7 @@ export default function TelaInicialCond() {
     <div className="tela-inicial-wrapper">
       {/* Main Content */}
       <main className="tela-inicial-main">
-        {/* Top Cards Grid */}
         <div className="cards-grid-top">
-          {/* Rota: /pets - Crie: app/pets/page.jsx */}
           <DashboardCard
             icon={Dog}
             title="Pets cadastrados"
@@ -130,7 +109,6 @@ export default function TelaInicialCond() {
             onClick={() => handleNavigation('/pets')}
           />
           
-          {/* Rota: /pets-perdidos - Crie: app/pets-perdidos/page.jsx */}
           <DashboardCard
             icon={AlertCircle}
             title="Pets perdidos"
@@ -140,7 +118,6 @@ export default function TelaInicialCond() {
             alert={data.petsLost > 0}
           />
           
-          {/* Rota: /donos - Crie: app/donos/page.jsx */}
           <DashboardCard
             icon={Bone}
             title="Donos cadastrados"
@@ -150,20 +127,16 @@ export default function TelaInicialCond() {
           />
         </div>
 
-        {/* Bottom Cards Grid */}
         <div className="cards-grid-bottom">
-          {/* Rota: /apartamentos - Crie: app/apartamentos/page.jsx */}
           <InfoCard
             value={data.apartmentsWithPets}
             label="Apartamentos com pets"
             onClick={() => handleNavigation('/apartamentos')}
           />
           
-          {/* Rota: /noticias - Crie: app/noticias/page.jsx */}
           <NewsCard onClick={() => handleNavigation('/noticias')} />
         </div>
       </main>
-
     </div>
   );
 }
