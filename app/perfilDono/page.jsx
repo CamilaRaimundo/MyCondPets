@@ -13,7 +13,7 @@ export default async function Home() {
   const session = await getServerSession(authOptions);
   if (!session) {
     redirect("/login");
-    return; // <-- evitar continuar
+    return; 
   }
 
   const userEmail = session.user.email;
