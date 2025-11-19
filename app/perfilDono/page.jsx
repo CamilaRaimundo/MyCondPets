@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import "./styles.css";
 
@@ -8,12 +7,11 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { PetsList } from "./PetsList";
 
-
 export default async function Home() {
   const session = await getServerSession(authOptions);
   if (!session) {
     redirect("/login");
-    return; 
+    return;
   }
 
   const userEmail = session.user.email;
@@ -28,7 +26,7 @@ export default async function Home() {
   try {
     // busca o dono logado
     const donoResult = await client.query(
-      'SELECT don_cpf, don_nome, don_email, don_contato FROM dono WHERE don_email = $1;',
+      "SELECT don_cpf, don_nome, don_email, don_contato FROM dono WHERE don_email = $1;",
       [userEmail]
     );
     dono = donoResult.rows[0];
@@ -36,17 +34,17 @@ export default async function Home() {
     if (dono) {
       // busca os pets do dono
       const petsResult = await client.query(
-        'SELECT pet_nome, pet_tipo FROM pet WHERE don_cpf = $1;',
+        "SELECT pet_nome, pet_tipo FROM pet WHERE don_cpf = $1;",
         [dono.don_cpf]
       );
       pets = petsResult.rows;
 
       // busca a residência do dono
       const residenciaResult = await client.query(
-        'SELECT res_complemento FROM residencia WHERE don_cpf = $1;',
+        "SELECT res_complemento FROM residencia WHERE don_cpf = $1;",
         [dono.don_cpf]
       );
-      residencia = residenciaResult.rows[0]
+      residencia = residenciaResult.rows[0];
     }
   } finally {
     client.release();
@@ -56,13 +54,14 @@ export default async function Home() {
 
   return (
     <main className="content">
-
       <div className="image-container">
         <img src="../images/pet11.jpg" className="pets-image" />
       </div>
 
       <section className="contentInfos">
-        <h1 className="title"><i className="fa-solid fa-user"></i> Meu Perfil</h1>
+        <h1 className="title">
+          <i className="fa-solid fa-user"></i> Meu Perfil
+        </h1>
         <div className="infos" key={dono.don_cpf}>
           <div className="label-info">
             <h1>Nome</h1>
@@ -90,7 +89,9 @@ export default async function Home() {
             <PetsList pets={pets} donoCpf={dono.don_cpf} />
           </div>
           <div className="add-pet">
-            <button className="btn-add"><i className="fa-solid fa-circle-plus"></i></button>
+            <button className="btn-add">
+              <i className="fa-solid fa-circle-plus"></i>
+            </button>
           </div>
         </section>
       </section>
