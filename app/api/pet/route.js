@@ -2,7 +2,7 @@ import pool from "@/app/_lib/db";
 
 export async function DELETE(request) {
   console.log("Entrou ", request)
-  const { pet_nome, don_cpf } = await request.json();
+  const { pet_nome, userEmail } = await request.json();
 
   if (!pet_nome || !don_cpf) {
     return new Response(JSON.stringify({ error: "Dados inválidos" }), { status: 400 });
@@ -11,9 +11,14 @@ export async function DELETE(request) {
   const client = await pool.connect();
 
   try {
-    await client.query("DELETE FROM pet WHERE pet_nome = $1 AND don_cpf = $2;", [
-      pet_nome,
-      don_cpf,
+
+    //     const donoResult = await client.query(
+    //   'SELECT don_id, don_nome, don_email, don_contato FROM dono WHERE don_email = $1;',
+    //   [userEmail]
+    // );
+    dono = donoResult.rows[0];
+    await client.query("DELETE FROM pet WHERE pet_nome = $1 AND don_email = $2;", [
+      [pet_nome, userEmail]
     ]);
 
     return new Response(JSON.stringify({ message: "Pet excluído com sucesso" }), {

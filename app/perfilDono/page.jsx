@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import React from "react";
 import "./styles.css";
 
@@ -28,7 +28,7 @@ export default async function Home() {
   try {
     // busca o dono logado
     const donoResult = await client.query(
-      'SELECT don_cpf, don_nome, don_email, don_contato FROM dono WHERE don_email = $1;',
+      'SELECT don_id, don_nome, don_email, don_contato FROM dono WHERE don_email = $1;',
       [userEmail]
     );
     dono = donoResult.rows[0];
@@ -36,15 +36,15 @@ export default async function Home() {
     if (dono) {
       // busca os pets do dono
       const petsResult = await client.query(
-        'SELECT pet_nome, pet_tipo FROM pet WHERE don_cpf = $1;',
-        [dono.don_cpf]
+        'SELECT pet_nome, pet_tipo FROM pet WHERE don_id = $1;',
+        [dono.don_id]
       );
       pets = petsResult.rows;
 
       // busca a residência do dono
       const residenciaResult = await client.query(
-        'SELECT res_complemento FROM residencia WHERE don_cpf = $1;',
-        [dono.don_cpf]
+        'SELECT res_complemento FROM residencia WHERE don_id = $1;',
+        [dono.don_id]
       );
       residencia = residenciaResult.rows[0]
     }

@@ -32,6 +32,11 @@ export function PetsList({ pets, donoCpf }) {
 
   return (
     <div className="lista-pets">
+
+      {listaPets.length === 0 && (
+        <p style={{ opacity: 0.7 }}>Nenhum pet cadastrado.</p>
+      )}
+      
       {listaPets.map((pet, index) => (
         <div className="pet-item" key={index}>
           <div className="pet-info">
@@ -42,9 +47,7 @@ export function PetsList({ pets, donoCpf }) {
             <button className="btn-delete" onClick={() => excluirPet(pet.pet_nome)}>
               <i className="fa-solid fa-square-minus"></i>
             </button>
-            <button className="btn-edit">
-              <i className="fa-solid fa-pen-to-square"></i>
-            </button>
+  
           </div>
         </div>
       ))}

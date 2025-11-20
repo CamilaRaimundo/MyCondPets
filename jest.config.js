@@ -1,6 +1,5 @@
 const nextJest = require("next/jest");
 
-
 const createJestConfig = nextJest({
   dir: "./",
 });
@@ -12,12 +11,22 @@ const customJestConfig = {
   moduleNameMapper: {
     "\\.(css|scss|sass)$": "identity-obj-proxy",
     "^@/(.*)$": "<rootDir>/$1",
-    "\\.(css|scss|sass)$": "identity-obj-proxy",
   },
 
-  // Garante que o Jest aceite ESM e JSX sem Babel
-  transform: {},
+  collectCoverageFrom: [
+    "app/**/*.{js,jsx}",
+    "components/**/*.{js,jsx}",
+    "!**/*.test.{js,jsx}",
+    "!**/node_modules/**",
+  ],
 
+  testMatch: [
+    "**/__tests__/**/*.[jt]s?(x)",
+    "**/?(*.)+(spec|test).[jt]s?(x)",
+  ],
+
+  // Permite ESM sem precisar de Babel
+  transform: {},
 };
 
 module.exports = createJestConfig(customJestConfig);
