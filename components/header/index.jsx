@@ -22,6 +22,7 @@ export function Header() {
                 {session ? (
                     <>
                         <nav className="menu">
+                            <Link href={'/telaInicialCond'} className="navega-item">Informações Condomínio</Link>
                             <Link href={'/'} className="navega-item">Notícias</Link>
                             <Link href={'/perfilDono'} className="navega-item">Perfil</Link>
                             <Link href={'/'} className="navega-item">Pets</Link>

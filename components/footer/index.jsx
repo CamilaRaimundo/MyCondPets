@@ -4,8 +4,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Bot, User } from 'lucide-react';
 import "./styles.css";
 
-export function Footer({ dashboardData }) {
+export function Footer() {
   const [isOpen, setIsOpen] = useState(false);
+  const [dashboardData, setDashboardData] = useState(null);
   const [messages, setMessages] = useState([
     {
       type: 'bot',
@@ -14,6 +15,29 @@ export function Footer({ dashboardData }) {
     }
   ]);
   const messagesEndRef = useRef(null);
+
+  // Busca os dados do dashboard quando o componente monta
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await fetch('/api/dashboard');
+        if (response.ok) {
+          const data = await response.json();
+          setDashboardData({
+            totalPets: data.petsCadastrados,
+            petsLost: data.petsPerdidos,
+            totalOwners: data.donosCadastrados,
+            apartmentsWithPets: data.aptosComPets
+          });
+          console.log('✅ Dados carregados no Footer:', data);
+        }
+      } catch (error) {
+        console.error('❌ Erro ao carregar dados no Footer:', error);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -32,69 +56,92 @@ export function Footer({ dashboardData }) {
 👥 Donos cadastrados: ${dashboardData?.totalOwners || 0}
 🏠 Apartamentos com pets: ${dashboardData?.apartmentsWithPets || 0}
 
-Tudo atualizado em tempo real!`,
+Dados atualizados em tempo real do nosso sistema de controle!`,
 
-    register: `🐕 Como Cadastrar um Pet:
+    register: `🐕 Cadastro de Pets no Condomínio:
 
-1. Clique no card "Pets cadastrados"
-2. Clique em "Adicionar Novo Pet"
-3. Preencha os dados do pet
-4. Adicione uma foto (opcional)
-5. Clique em "Salvar"
+O sistema permite o cadastro completo de todos os pets do condomínio, incluindo:
 
-Pronto! Seu pet estará cadastrado! ✅`,
+• Nome e dados do pet
+• Raça e características
+• Informações do proprietário
+• Foto do animal
+• Número do apartamento
 
-    lost: `🚨 Como Reportar Pet Perdido:
+Isso facilita a identificação e controle de todos os animais residentes no condomínio.`,
 
-1. Clique no card vermelho "Pets perdidos"
-2. Clique em "Reportar Pet Perdido"
-3. Selecione seu pet da lista
-4. Informe local e data
-5. Clique em "Enviar Alerta"
+    lost: `🚨 Sistema de Pets Perdidos:
 
-Todos os moradores serão notificados! 📢`,
+Nosso sistema possui um módulo especial para reportar pets perdidos:
 
-    news: `📰 Como Ver Notícias:
+• Registro rápido de desaparecimento
+• Notificação para todos os moradores
+• Informações de última localização
+• Sistema de alertas em tempo real
 
-1. Clique no card "Notícias"
-2. Veja todas as notícias recentes
-3. Avisos importantes aparecem primeiro
+Em caso de pet perdido, o alerta é enviado imediatamente para toda a comunidade!`,
 
-Fique sempre atualizado! 🔔`,
+    news: `📰 Central de Notícias do Condomínio:
 
-    apartments: `🏠 Apartamentos com Pets:
+O card "Notícias" dá acesso às informações importantes:
+
+• Comunicados da administração
+• Avisos sobre pets
+• Regras e regulamentos
+• Eventos do condomínio
+
+Mantenha-se informado sobre tudo que acontece em nosso condomínio!`,
+
+    apartments: `🏠 Controle de Apartamentos:
 
 Atualmente temos ${dashboardData?.apartmentsWithPets || 0} apartamentos com pets cadastrados.
 
-Para ver detalhes:
-1. Clique no card "Apartamentos com pets"
-2. Veja a lista completa
+O sistema mantém registro de:
 
-Informações sempre atualizadas! 📋`,
+• Quais apartamentos possuem pets
+• Quantidade de animais por unidade
+• Informações dos proprietários
+• Histórico de cadastros
 
-    help: `❓ Ajuda do Sistema:
+Isso garante organização e segurança para todos!`,
 
-Principais Funcionalidades:
+    help: `❓ Sobre o Sistema:
 
-🐕 Pets: Cadastro e gerenciamento
-🚨 Alertas: Sistema de pets perdidos
-👥 Donos: Informações dos proprietários
-🏠 Apartamentos: Controle por unidade
-📰 Notícias: Avisos e comunicados
+Este é um sistema completo de controle de pets em condomínios, oferecendo:
 
-Selecione qualquer opção para saber mais!`,
+🐕 **Gestão de Pets**: Cadastro e acompanhamento de todos os animais
+🚨 **Alertas**: Sistema para pets perdidos com notificação instantânea
+👥 **Proprietários**: Controle de donos e responsáveis
+🏠 **Unidades**: Monitoramento por apartamento
+📰 **Comunicação**: Central de notícias e avisos
 
-    contact: `📞 Contato e Suporte:
+Tudo para garantir segurança e organização!`,
 
-Administração do Condomínio:
-📧 Email: admin@petcondo.com.br
-📱 WhatsApp: (11) 9999-9999
-⏰ Seg a Sex, 8h às 18h
+    contact: `📞 Informações de Contato:
 
-Emergências Veterinárias:
-🏥 Clínica Pet Care
-📱 (11) 8888-8888
-🕐 Disponível 24h`
+**Condomínio Residencial Jardim das Flores**
+📍 Rua das Acácias, 245 - Jardim Paulista
+📍 São Paulo - SP, CEP 01452-000
+
+**Administração:**
+📧 Email: admin@condjardimdflores.com.br
+📱 Telefone: (11) 3456-7890
+📱 WhatsApp: (11) 98765-4321
+⏰ Horário: Segunda a Sexta, 8h às 18h
+⏰ Sábado: 8h às 12h
+
+**Portaria 24h:**
+📱 (11) 3456-7891
+
+**Síndico:**
+👤 Sr. Roberto Silva
+📧 sindico@condjardimdflores.com.br
+📱 (11) 97654-3210
+
+**Emergências Veterinárias:**
+🏥 Clínica VetCare 24h
+📱 (11) 3333-4444
+📍 A 2 km do condomínio`
   };
 
   const quickActions = [
