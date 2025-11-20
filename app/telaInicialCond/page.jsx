@@ -1,16 +1,12 @@
 "use client";
-
 import React, { useState, useEffect } from 'react';
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Dog, AlertCircle, Bone, Newspaper } from 'lucide-react';
 import "./css/telaInicial.css";
 
 // Componente de Card do Dashboard
-const DashboardCard = ({ icon: Icon, title, value, color, onClick, alert }) => (
-  <div
-    onClick={onClick}
-    className={`dashboard-card ${color} ${alert ? 'alert-card' : ''}`}
-  >
+const DashboardCard = ({ icon: Icon, title, value, color, alert }) => (
+  <div className={`dashboard-card ${color} ${alert ? 'alert-card' : ''}`}>
     {alert && (
       <div className="alert-icon">
         <AlertCircle className="w-8 h-8 text-white animate-pulse" />
@@ -20,35 +16,34 @@ const DashboardCard = ({ icon: Icon, title, value, color, onClick, alert }) => (
       <Icon className="card-icon" />
       <div className="card-value">{value}</div>
       <div className="card-title">{title}</div>
-      <button className="card-button">
-        {alert ? 'Ver Detalhes' : 'Detalhes'}
-      </button>
     </div>
   </div>
 );
 
-const InfoCard = ({ value, label, onClick }) => (
-  <div onClick={onClick} className="info-card">
+const InfoCard = ({ value, label }) => (
+  <div className="info-card">
     <div className="info-value">{value}</div>
     <div className="info-label">{label}</div>
   </div>
 );
 
-const NewsCard = ({ onClick }) => (
-  <div onClick={onClick} className="news-card">
+const NewsCard = () => (
+  <div className="news-card">
     <div className="news-content">
       <Newspaper className="news-icon" />
       <div className="news-title">Notícias</div>
     </div>
-    <button className="news-button">Ver todas</button>
+    <Link href={'/noticias'} className="news-button">
+      Ver todas
+    </Link>
   </div>
 );
 
 // Componente Principal
 export default function TelaInicialCond() {
-  const router = useRouter();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -57,23 +52,43 @@ export default function TelaInicialCond() {
   const loadData = async () => {
     try {
       setLoading(true);
+      setError(null);
       
-      // Usa dados mockados
+      console.log('🔄 Buscando dados do dashboard...');
+      
+      // Chama a API do dashboard
+      const response = await fetch('/api/dashboard');
+      
+      console.log('📡 Resposta da API:', response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('❌ Erro da API:', errorData);
+        throw new Error(errorData.details || 'Erro ao carregar dados do servidor');
+      }
+      
+      const dashboardData = await response.json();
+      console.log('✅ Dados recebidos:', dashboardData);
+      
+      // Mapeia os dados da API para o formato esperado pelo componente
       setData({
-        totalPets: 34,
-        petsLost: 1,
-        totalOwners: 40,
-        apartmentsWithPets: 40,
+        totalPets: dashboardData.petsCadastrados,
+        petsLost: dashboardData.petsPerdidos,
+        totalOwners: dashboardData.donosCadastrados,
+        apartmentsWithPets: dashboardData.aptosComPets,
         recentNews: []
       });
       
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
+      setError(error.message);
+      
+      // Em caso de erro, usa dados de fallback
       setData({
-        totalPets: 34,
-        petsLost: 1,
-        totalOwners: 40,
-        apartmentsWithPets: 40,
+        totalPets: 0,
+        petsLost: 0,
+        totalOwners: 0,
+        apartmentsWithPets: 0,
         recentNews: []
       });
     } finally {
@@ -81,15 +96,23 @@ export default function TelaInicialCond() {
     }
   };
 
-  const handleNavigation = (route) => {
-    router.push(route);
-  };
-
   if (loading) {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
         <p className="loading-text">Carregando...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <AlertCircle className="error-icon" />
+        <p className="error-text">Erro ao carregar dados: {error}</p>
+        <button onClick={loadData} className="retry-button">
+          Tentar novamente
+        </button>
       </div>
     );
   }
@@ -106,24 +129,19 @@ export default function TelaInicialCond() {
             title="Pets cadastrados"
             value={data.totalPets}
             color="card-teal"
-            onClick={() => handleNavigation('/pets')}
           />
-          
           <DashboardCard
             icon={AlertCircle}
             title="Pets perdidos"
             value={data.petsLost}
             color="card-red"
-            onClick={() => handleNavigation('/pets-perdidos')}
             alert={data.petsLost > 0}
           />
-          
           <DashboardCard
             icon={Bone}
             title="Donos cadastrados"
             value={data.totalOwners}
             color="card-dark-teal"
-            onClick={() => handleNavigation('/donos')}
           />
         </div>
 
@@ -131,10 +149,8 @@ export default function TelaInicialCond() {
           <InfoCard
             value={data.apartmentsWithPets}
             label="Apartamentos com pets"
-            onClick={() => handleNavigation('/apartamentos')}
           />
-          
-          <NewsCard onClick={() => handleNavigation('/noticias')} />
+          <NewsCard />
         </div>
       </main>
     </div>
