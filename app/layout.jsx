@@ -8,9 +8,12 @@ export default function RootLayout({ children }) {
     <html lang="pt-br">
       <body>
         <AuthProvider>
-          <Header/>
+          <Header />
+
+          <script src="https://kit.fontawesome.com/58c0554857.js" crossOrigin="anonymous"></script>
+
           {children}
-          <Footer/>
+          <Footer />
         </AuthProvider>
       </body>
     </html>
