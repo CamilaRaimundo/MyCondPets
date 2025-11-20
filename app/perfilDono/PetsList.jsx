@@ -1,22 +1,29 @@
 "use client";
 import { useState } from "react";
+import { useSession } from "next-auth/react"; // Adicione isso
 
 export function PetsList({ pets, donoCpf }) {
   const [listaPets, setListaPets] = useState(pets || []);
+  const { data: session } = useSession(); // Pegue o email da sessão
 
   async function excluirPet(petNome) {
     if (!confirm(`Tem certeza que deseja excluir ${petNome}?`)) return;
 
     try {
-      // const res = await fetch("/api/pet", {
-      //   method: "DELETE",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ pet_nome: petNome, don_cpf: donoCpf }),
-      // });
+      const res = await fetch("/api/pet", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          pet_nome: petNome, 
+          userEmail: session?.user?.email // Use userEmail ao invés de don_cpf
+        }),
+      });
 
-      const res = excluiPET();
-      
-      if (!res.ok) throw new Error("Erro ao excluir pet");
+      if (!res.ok) {
+        const error = await res.json();
+        console.error("Erro do servidor:", error);
+        throw new Error("Erro ao excluir pet");
+      }
 
       setListaPets((prev) => prev.filter((p) => p.pet_nome !== petNome));
       alert("Pet excluído com sucesso!");
@@ -32,11 +39,6 @@ export function PetsList({ pets, donoCpf }) {
 
   return (
     <div className="lista-pets">
-
-      {listaPets.length === 0 && (
-        <p style={{ opacity: 0.7 }}>Nenhum pet cadastrado.</p>
-      )}
-      
       {listaPets.map((pet, index) => (
         <div className="pet-item" key={index}>
           <div className="pet-info">
@@ -47,7 +49,6 @@ export function PetsList({ pets, donoCpf }) {
             <button className="btn-delete" onClick={() => excluirPet(pet.pet_nome)}>
               <i className="fa-solid fa-square-minus"></i>
             </button>
-  
           </div>
         </div>
       ))}
