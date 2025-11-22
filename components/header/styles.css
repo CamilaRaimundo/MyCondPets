@@ -60,3 +60,25 @@
 .logout-btn:hover {
   background-color: #ff4c4c;
 }
+
+.aviso-perfil {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+}
+
+.aviso-texto {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.aviso-texto i {
+  color: #ffc107;
+}

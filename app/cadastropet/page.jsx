@@ -2,7 +2,8 @@ import pool from "@/app/_lib/db";
 import FormCadastroPet from "./FormCadastroPet";
 import "./css/cadastroPet.css";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+// import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/_lib/authOptions";
 import { redirect } from "next/navigation";
 import React from "react";
 

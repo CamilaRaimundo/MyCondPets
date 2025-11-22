@@ -1,11 +1,9 @@
 import React from "react";
-import "./styles.css";
-import Link from "next/link";
 import pool from "@/app/_lib/db";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/_lib/authOptions";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { PetsList } from "./PetsList";
+import { PerfilContent } from "./PerfilContent";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -23,10 +21,8 @@ export default async function Home() {
   let residencia = null;
 
   try {
-
     client = await pool.connect();
 
-    // busca o dono logado
     const donoResult = await client.query(
       "SELECT don_id, don_nome, don_email, don_contato, don_cpf FROM dono WHERE don_email = $1;",
       [userEmail]
@@ -35,16 +31,14 @@ export default async function Home() {
     dono = donoResult.rows[0];
 
     if (dono) {
-      // busca os pets do dono
       const petsResult = await client.query(
         "SELECT pet_nome, pet_tipo FROM pet WHERE don_id = $1;",
         [dono.don_id]
       );
       pets = petsResult.rows;
 
-      // busca a residência do dono
       const residenciaResult = await client.query(
-        "SELECT res_complemento FROM residencia WHERE don_id = $1;",
+        "SELECT res_id, res_complemento, res_numero, res_cep FROM residencia WHERE don_id = $1;",
         [dono.don_id]
       );
       residencia = residenciaResult.rows[0];
@@ -52,13 +46,11 @@ export default async function Home() {
   } catch (error) {
     console.error("Erro ao buscar dados do perfil:", error);
   } finally {
-    // CORREÇÃO: Verificar se client existe antes de liberar
     if (client) {
       client.release();
     }
   }
 
-  // Se não encontrou o dono, mostrar mensagem
   if (!dono) {
     return (
       <main className="content">
@@ -71,57 +63,10 @@ export default async function Home() {
   }
 
   return (
-    <main className="content">
-      <div className="image-container">
-        <img src="../images/pet11.jpg" className="pets-image" />
-      </div>
-
-      <section className="contentInfos">
-        <h1 className="title">
-          <i className="fa-solid fa-user"></i> Meu Perfil
-        </h1>
-
-        <div className="infos" key={dono.don_cpf}>
-          <div className="label-info">
-            <h1>Nome</h1>
-            <input type="text" value={dono.don_nome || ""} disabled />
-          </div>
-          <div className="label-info">
-            <h1>E-mail</h1>
-            <input type="text" value={dono.don_email || ""} disabled />
-          </div>
-          <div className="label-info">
-            <h1>Apartamento</h1>
-            <input
-              type="text"
-              value={residencia?.res_complemento || ""}
-              disabled
-            />
-          </div>
-          <div className="label-info">
-            <h1>Contato</h1>
-            <input type="text" value={dono?.don_contato || ""} disabled />
-          </div>
-        </div>
-
-        <section className="meus-pets">
-          <div className="titulo-pets">
-            <h2>Meus Pets</h2>
-          </div>
-
-          <div className="lista-pets">
-            <PetsList pets={pets} donoCpf={dono.don_cpf} />
-          </div>
-
-          <div className="add-pet">
-            <Link href="/cadastropet">
-              <button className="btn-add">
-                <i className="fa-solid fa-circle-plus"></i>
-              </button>
-            </Link>
-          </div>
-        </section>
-      </section>
-    </main>
+    <PerfilContent 
+      dono={dono} 
+      pets={pets} 
+      residencia={residencia} 
+    />
   );
 }
