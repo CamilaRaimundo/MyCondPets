@@ -18,11 +18,13 @@ export default async function Noticias() {
           n.not_data_publicacao,
           n.don_id,
           d.don_nome,
-          d.don_contato
+          d.don_contato,
+          p.pet_foto 
         FROM noticias n
         INNER JOIN dono d ON n.don_id = d.don_id
+        LEFT JOIN pet p ON p.don_id = d.don_id
         ORDER BY n.not_data_publicacao DESC;
-      `);
+      `); 
 
       noticias = result.rows.map((row) => ({
         id: row.not_id,

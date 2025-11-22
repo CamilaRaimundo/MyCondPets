@@ -36,7 +36,9 @@ export function Header() {
               <Link href={'/telaInicialCond'} className="navega-item">Tela Inicial (Condomínio)</Link>
               <Link href={'/noticias'} className="navega-item">Notícias</Link>
               <Link href={'/perfilDono'} className="navega-item">Perfil</Link>
-              <Link href={'/pets'} className="navega-item">Pets</Link>
+              <Link href={'/detalhesPets'} className="navega-item">Pets</Link>
+              <Link href={'/cadastropet'} className="navega-item">Cadastrar Pet</Link>
+
             </nav>
             <button className="logout-btn" onClick={() => signOut()}>Sair</button>
           </>
