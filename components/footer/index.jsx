@@ -29,7 +29,6 @@ export function Footer() {
             totalOwners: data.donosCadastrados,
             apartmentsWithPets: data.aptosComPets
           });
-          console.log('✅ Dados carregados no Footer:', data);
         }
       } catch (error) {
         console.error('❌ Erro ao carregar dados no Footer:', error);

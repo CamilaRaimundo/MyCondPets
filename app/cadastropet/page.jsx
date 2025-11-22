@@ -9,7 +9,10 @@ import React from "react";
 export default async function CadastroPage() {
 
   const session = await getServerSession(authOptions);
-  if (!session) redirect("/login");
+  if (!session) {
+    redirect("/login");
+    return; // Adicione esta linha
+  }
 
   const userEmail = session.user.email;
 

@@ -4,7 +4,6 @@
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import TelaInicialCond from '../page';
-// CORREÇÃO: Caminho ajustado para subir 3 níveis (da pasta tests para a raiz /app)
 import { Footer } from '../../../components/footer/index'; 
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -535,35 +534,5 @@ describe('Footer - Chatbot', () => {
     await waitFor(() => {
       expect(screen.getByText(/sistema completo de controle de pets/i)).toBeInTheDocument();
     });
-  });
-});
-
-// ============================================
-// TESTES DA API ROUTE (/api/dashboard)
-// ============================================
-
-describe('API Route - /api/dashboard', () => {
-  // Nota: Estes testes são conceituais, pois testar Next.js API routes
-  // requer configuração adicional com next-test-api-route-handler
-  
-  test('conceito: API deve retornar dados do dashboard', () => {
-    // Este teste demonstra o que esperamos da API
-    const expectedResponse = {
-      petsCadastrados: expect.any(Number),
-      petsPerdidos: expect.any(Number),
-      donosCadastrados: expect.any(Number),
-      aptosComPets: expect.any(Number)
-    };
-    
-    expect(expectedResponse).toBeDefined();
-  });
-
-  test('conceito: API deve retornar erro 500 em caso de falha', () => {
-    const expectedErrorResponse = {
-      error: 'Erro ao buscar dados do dashboard',
-      details: expect.any(String)
-    };
-    
-    expect(expectedErrorResponse).toBeDefined();
   });
 });

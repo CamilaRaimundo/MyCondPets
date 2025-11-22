@@ -1,5 +1,5 @@
 /**
- * app/cadastropet/page.test.js
+ * app/cadastropet/cadastroPet.test.js
  */
 
 import React from "react";
@@ -8,19 +8,17 @@ import CadastroPage from "./page";
 import { redirect } from "next/navigation";
 import pool from "@/app/_lib/db";
 import { getServerSession } from "next-auth";
+
 // ---------------------------
 // MOCKS
 // ---------------------------
-
 
 jest.mock("next-auth", () => ({
   getServerSession: jest.fn(),
 }));
 
 jest.mock("next/navigation", () => ({
-  redirect: jest.fn(() => {
-    throw new Error("REDIRECT");
-  }),
+  redirect: jest.fn(),
 }));
 
 jest.mock("@/app/api/auth/[...nextauth]/route", () => ({
@@ -47,7 +45,6 @@ const mockClient = {
 
 pool.connect.mockResolvedValue(mockClient);
 
-
 // ---------------------------
 // TESTES
 // ---------------------------
@@ -61,13 +58,13 @@ describe("CadastroPage", () => {
   test("redireciona para /login quando não houver sessão", async () => {
     getServerSession.mockResolvedValueOnce(null);
 
-    await expect(CadastroPage()).rejects.toThrow("REDIRECT");
+    await CadastroPage();
+
+    expect(redirect).toHaveBeenCalledWith("/login");
   });
 
   // 2 — Renderiza quando sessão existe
   test("permite acesso quando houver sessão válida", async () => {
-    const { getServerSession } = require("next-auth");
-
     getServerSession.mockResolvedValue({
       user: { email: "teste@email.com" },
     });
@@ -94,8 +91,6 @@ describe("CadastroPage", () => {
 
   // 3 — Busca dados do dono
   test("busca dados do dono pelo email da sessão", async () => {
-    const { getServerSession } = require("next-auth");
-
     getServerSession.mockResolvedValue({
       user: { email: "teste@email.com" },
     });
@@ -125,8 +120,6 @@ describe("CadastroPage", () => {
 
   // 4 — Dono não encontrado
   test("exibe mensagem de erro quando dono não for encontrado", async () => {
-    const { getServerSession } = require("next-auth");
-
     getServerSession.mockResolvedValue({
       user: { email: "teste@email.com" },
     });
@@ -143,8 +136,6 @@ describe("CadastroPage", () => {
 
   // 5 — Exibe informações do dono
   test("exibe informações do dono quando encontrado", async () => {
-    const { getServerSession } = require("next-auth");
-
     getServerSession.mockResolvedValue({
       user: { email: "maria@email.com" },
     });
@@ -173,8 +164,6 @@ describe("CadastroPage", () => {
 
   // 6 — Complemento da residência
   test("exibe complemento da residência quando disponível", async () => {
-    const { getServerSession } = require("next-auth");
-
     getServerSession.mockResolvedValue({
       user: { email: "teste@email.com" },
     });
@@ -196,8 +185,6 @@ describe("CadastroPage", () => {
 
   // 7 — Sem complemento → "Não informado"
   test('exibe "Não informado" quando não houver residência', async () => {
-    const { getServerSession } = require("next-auth");
-
     getServerSession.mockResolvedValue({
       user: { email: "teste@email.com" },
     });
@@ -217,8 +204,6 @@ describe("CadastroPage", () => {
 
   // 8 — Renderiza FormCadastroPet com ID
   test("renderiza FormCadastroPet com donoId correto", async () => {
-    const { getServerSession } = require("next-auth");
-
     getServerSession.mockResolvedValue({
       user: { email: "teste@email.com" },
     });

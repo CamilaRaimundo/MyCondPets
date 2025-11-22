@@ -1,38 +1,38 @@
 /**
- * app/perfilDono/perfilDono.test.jsx
+ * app/perfilDono/perfilDono.test.js
  */
-
-import React from "react"; // garante que React exista no ambiente do teste (cautela)
+import React from "react";
 import { render, screen } from "@testing-library/react";
-
-// importa o Home relativo à pasta app/perfilDono -> ../page
-import Home from "./page"; 
+import Home from "./page";
 
 // ---------------------------
 // MOCKS
 // ---------------------------
 
-// Mock do getServerSession (o seu código importa { getServerSession } from "next-auth")
+// Mock do next-auth
 jest.mock("next-auth", () => ({
   getServerSession: jest.fn(),
 }));
 
-// Mock do authOptions (caso seja importado pelo seu Home)
+// Importa DEPOIS do mock
+const { getServerSession } = require("next-auth");
+
+// Mock do authOptions
 jest.mock("../api/auth/[...nextauth]/route", () => ({
   authOptions: {},
 }));
 
-// Mock do redirect (next/navigation)
+// Mock do redirect
 jest.mock("next/navigation", () => ({
   redirect: jest.fn(),
 }));
 
-// Mock do componente PetsList — caminho RELATIVO (está em app/perfilDono/PetsList.jsx)
+// Mock do componente PetsList
 jest.mock("./PetsList", () => ({
   PetsList: (props) => <div data-testid="pets-list-mock">{JSON.stringify(props)}</div>,
 }));
 
-// Mock da conexão com banco (app/_lib/db)
+// Mock da conexão com banco
 const mockClient = {
   query: jest.fn(),
   release: jest.fn(),
@@ -41,7 +41,7 @@ const mockClient = {
 jest.mock("../_lib/db", () => ({
   __esModule: true,
   default: {
-    connect: jest.fn(() => mockClient),
+    connect: jest.fn(() => Promise.resolve(mockClient)),
   },
 }));
 
@@ -52,11 +52,21 @@ jest.mock("../_lib/db", () => ({
 describe("Home Page", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Reset do mockClient.query para cada teste
+    mockClient.query.mockReset();
+    mockClient.release.mockReset();
+  });
+
+  test("redireciona para /login quando não houver sessão", async () => {
+    const { redirect } = require("next/navigation");
+    getServerSession.mockResolvedValueOnce(null);
+
+    await Home();
+
+    expect(redirect).toHaveBeenCalledWith("/login");
   });
 
   test("renderiza dados do dono e pets corretamente", async () => {
-    const { getServerSession } = require("next-auth");
-
     // Simula sessão logada
     getServerSession.mockResolvedValue({
       user: { email: "teste@teste.com" },
@@ -68,6 +78,7 @@ describe("Home Page", () => {
       .mockResolvedValueOnce({
         rows: [
           {
+            don_id: 1,
             don_cpf: "123",
             don_nome: "João",
             don_email: "teste@teste.com",
@@ -87,7 +98,7 @@ describe("Home Page", () => {
         rows: [{ res_complemento: "Apt 21B" }],
       });
 
-    // Executa componente (Server Component) — Home é async
+    // Executa componente (Server Component)
     const ui = await Home();
 
     // Renderiza o JSX retornado
@@ -103,20 +114,7 @@ describe("Home Page", () => {
     expect(screen.getByTestId("pets-list-mock")).toBeInTheDocument();
   });
 
-  test("redireciona se não estiver logado", async () => {
-    const { getServerSession } = require("next-auth");
-    const { redirect } = require("next/navigation");
-
-    getServerSession.mockResolvedValue(null);
-
-    await Home(); // execução apenas para disparar redirect
-
-    expect(redirect).toHaveBeenCalledWith("/login");
-  });
-
   test("mostra 'Dono não encontrado' se query não retornar dono", async () => {
-    const { getServerSession } = require("next-auth");
-
     getServerSession.mockResolvedValue({
       user: { email: "teste@teste.com" },
     });
@@ -130,5 +128,21 @@ describe("Home Page", () => {
     render(ui);
 
     expect(screen.getByText("Dono não encontrado")).toBeInTheDocument();
+  });
+
+  test("exibe mensagem de erro quando não encontra dados do perfil", async () => {
+    getServerSession.mockResolvedValue({
+      user: { email: "inexistente@teste.com" },
+    });
+
+    // Query retorna vazio
+    mockClient.query.mockResolvedValueOnce({
+      rows: [],
+    });
+
+    const ui = await Home();
+    render(ui);
+
+    expect(screen.getByText("Não foi possível carregar os dados do perfil.")).toBeInTheDocument();
   });
 });

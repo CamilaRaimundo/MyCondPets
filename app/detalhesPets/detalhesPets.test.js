@@ -6,7 +6,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import DetalhesPets from "./page";
 import "@testing-library/jest-dom";
-require("@testing-library/jest-dom");
 
 const mockPets = [
   {

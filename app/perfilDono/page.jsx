@@ -1,6 +1,5 @@
 import React from "react";
 import "./styles.css";
-
 import pool from "@/app/_lib/db";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
@@ -9,6 +8,7 @@ import { PetsList } from "./PetsList";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
+
   if (!session) {
     redirect("/login");
     return;
@@ -16,12 +16,22 @@ export default async function Home() {
 
   const userEmail = session.user.email;
 
+  // CORREÇÃO: Declarar as variáveis ANTES do try/catch
+  let client;
+  let dono = null;
+  let pets = [];
+  let residencia = null;
+
   try {
+    // CORREÇÃO: Obter a conexão do pool ANTES de usar
+    client = await pool.connect();
+
     // busca o dono logado
     const donoResult = await client.query(
-      'SELECT don_id, don_nome, don_email, don_contato FROM dono WHERE don_email = $1;',
+      'SELECT don_id, don_nome, don_email, don_contato, don_cpf FROM dono WHERE don_email = $1;',
       [userEmail]
     );
+
     dono = donoResult.rows[0];
 
     if (dono) {
@@ -39,8 +49,25 @@ export default async function Home() {
       );
       residencia = residenciaResult.rows[0];
     }
+  } catch (error) {
+    console.error('Erro ao buscar dados do perfil:', error);
   } finally {
-    client.release(); // Libera a conexão
+    // CORREÇÃO: Verificar se client existe antes de liberar
+    if (client) {
+      client.release();
+    }
+  }
+
+  // Se não encontrou o dono, mostrar mensagem
+  if (!dono) {
+    return (
+      <main className="content">
+        <div className="error-container">
+          <h1>Dono não encontrado</h1>
+          <p>Não foi possível carregar os dados do perfil.</p>
+        </div>
+      </main>
+    );
   }
 
   return (
@@ -53,22 +80,23 @@ export default async function Home() {
         <h1 className="title">
           <i className="fa-solid fa-user"></i> Meu Perfil
         </h1>
+
         <div className="infos" key={dono.don_cpf}>
           <div className="label-info">
             <h1>Nome</h1>
-            <input type="text" value={dono.don_nome} disabled />
+            <input type="text" value={dono.don_nome || ''} disabled />
           </div>
           <div className="label-info">
             <h1>E-mail</h1>
-            <input type="text" value={dono.don_email} disabled />
+            <input type="text" value={dono.don_email || ''} disabled />
           </div>
           <div className="label-info">
             <h1>Apartamento</h1>
-            <input type="text" value={residencia.res_complemento} disabled />
+            <input type="text" value={residencia?.res_complemento || ''} disabled />
           </div>
           <div className="label-info">
             <h1>Contato</h1>
-            <input type="text" value={dono?.don_contato} disabled />
+            <input type="text" value={dono?.don_contato || ''} disabled />
           </div>
         </div>
 
@@ -76,9 +104,11 @@ export default async function Home() {
           <div className="titulo-pets">
             <h2>Meus Pets</h2>
           </div>
+
           <div className="lista-pets">
             <PetsList pets={pets} donoCpf={dono.don_cpf} />
           </div>
+
           <div className="add-pet">
             <button className="btn-add">
               <i className="fa-solid fa-circle-plus"></i>
@@ -86,9 +116,6 @@ export default async function Home() {
           </div>
         </section>
       </section>
-
-      {/* Carrossel de notícias */}
-      <NoticiasCarousel noticias={noticias} />
     </main>
   );
 }

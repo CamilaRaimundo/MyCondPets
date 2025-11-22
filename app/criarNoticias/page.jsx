@@ -57,6 +57,10 @@ export default function CriarNoticias() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Limpa mensagem anterior
+    setMessage({ type: '', text: '' });
+
+    // Validações síncronas - isso garante que o state seja atualizado antes do async
     if (!formData.titulo.trim()) {
       setMessage({ type: 'error', text: 'Por favor, insira um título' });
       return;
@@ -72,9 +76,9 @@ export default function CriarNoticias() {
       return;
     }
 
+    // Se passou nas validações, prossegue com o submit
     try {
       setLoading(true);
-      setMessage({ type: '', text: '' });
 
       console.log('📤 Enviando notícia:', formData);
 
@@ -145,7 +149,7 @@ export default function CriarNoticias() {
           </div>
 
           {message.text && (
-            <div className={`message-alert ${message.type}`}>
+            <div className={`message-alert ${message.type}`} role="alert">
               {message.type === 'success' ? (
                 <CheckCircle className="message-icon" />
               ) : (
@@ -212,7 +216,7 @@ export default function CriarNoticias() {
                 className="form-select"
                 required
               >
-                <option value="">-- Selecione quem está publicando --</option>
+                <option value="">-- Selecione o responsável --</option>
                 {donos.map((dono) => (
                   <option key={dono.don_id} value={dono.don_id}>
                     {dono.don_nome}

@@ -36,7 +36,6 @@ export default function FormCadastroPet({ donoId }) {
         setMensagem(null);
 
         try {
-            console.log("🚀 Enviando formulário... donoId:", donoId);
             
             const formData = new FormData(e.target);
             formData.append("don_id", donoId);
