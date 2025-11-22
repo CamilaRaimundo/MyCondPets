@@ -16,13 +16,6 @@ export default async function Home() {
 
   const userEmail = session.user.email;
 
-  const client = await pool.connect();
-
-  // declarar variáveis fora do try para uso no return
-  let dono = null;
-  let pets = [];
-  let residencia = null;
-
   try {
     // busca o dono logado
     const donoResult = await client.query(
@@ -47,10 +40,8 @@ export default async function Home() {
       residencia = residenciaResult.rows[0];
     }
   } finally {
-    client.release();
+    client.release(); // Libera a conexão
   }
-
-  if (!dono) return <p>Dono não encontrado</p>;
 
   return (
     <main className="content">
@@ -95,6 +86,9 @@ export default async function Home() {
           </div>
         </section>
       </section>
+
+      {/* Carrossel de notícias */}
+      <NoticiasCarousel noticias={noticias} />
     </main>
   );
 }
