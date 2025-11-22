@@ -40,11 +40,9 @@ export default function FormCadastroPet({ donoId }) {
             const formData = new FormData(e.target);
             formData.append("don_id", donoId);
 
-            console.log("📦 FormData preparado");
             
             const resultado = await cadastrarPet(formData);
             
-            console.log("📨 Resposta recebida:", resultado);
 
             setMensagem({
                 tipo: resultado.success ? "sucesso" : "erro",
@@ -58,7 +56,7 @@ export default function FormCadastroPet({ donoId }) {
                 setRacas([]);
             }
         } catch (error) {
-            console.error("❌ Erro no handleSubmit:", error);
+            console.error(" Erro no handleSubmit:", error);
             setMensagem({
                 tipo: "erro",
                 texto: `Erro: ${error.message}`

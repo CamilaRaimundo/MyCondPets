@@ -1,7 +1,6 @@
 import pool from "@/app/_lib/db";
 
 export async function DELETE(request) {
-  console.log("Entrou DELETE");
   
   const { pet_nome, userEmail } = await request.json();
 

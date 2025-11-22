@@ -3,7 +3,6 @@
 import pool from "@/app/_lib/db";
 
 export async function excluiPET(request) {
-  console.log("Entrou ", request)
   const { pet_nome, don_cpf } = await request.json();
 
   if (!pet_nome || !don_cpf) {
@@ -22,7 +21,6 @@ export async function excluiPET(request) {
       status: 200,
     });
   } catch (error) {
-    console.error("Erro ao excluir pet:", error);
     return new Response(JSON.stringify({ error: "Erro ao excluir pet" }), { status: 500 });
   } finally {
     client.release();

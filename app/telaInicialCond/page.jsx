@@ -54,21 +54,18 @@ export default function TelaInicialCond() {
       setLoading(true);
       setError(null);
       
-      console.log('🔄 Buscando dados do dashboard...');
       
       // Chama a API do dashboard
       const response = await fetch('/api/dashboard');
       
-      console.log('📡 Resposta da API:', response.status);
       
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('❌ Erro da API:', errorData);
+        console.error(' Erro da API:', errorData);
         throw new Error(errorData.details || 'Erro ao carregar dados do servidor');
       }
       
       const dashboardData = await response.json();
-      console.log('✅ Dados recebidos:', dashboardData);
       
       // Mapeia os dados da API para o formato esperado pelo componente
       setData({

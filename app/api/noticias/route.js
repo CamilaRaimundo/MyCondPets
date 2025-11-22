@@ -2,12 +2,10 @@ import { NextResponse } from 'next/server';
 import pool from '../../_lib/db';
 
 export async function GET() {
-  console.log('🔍 Buscando notícias...');
   let client;
 
   try {
     client = await pool.connect();
-    console.log('✅ Conectado ao banco!');
 
     const result = await client.query(`
       SELECT *
@@ -15,11 +13,10 @@ export async function GET() {
       ORDER BY not_data_publicacao DESC
     `);
 
-    console.log(`✅ ${result.rows.length} notícias encontradas`);
     return NextResponse.json(result.rows, { status: 200 });
 
   } catch (error) {
-    console.error('❌ Erro ao buscar notícias:', error);
+    console.error(' Erro ao buscar notícias:', error);
     return NextResponse.json(
       { error: 'Erro ao buscar notícias', details: error.message },
       { status: 500 }
@@ -30,12 +27,10 @@ export async function GET() {
 }
 
 export async function POST(request) {
-  console.log('📝 Criando nova notícia...');
   let client;
 
   try {
     const body = await request.json();
-    console.log('📦 Dados recebidos:', body);
 
     if (!body.titulo?.trim()) {
       return NextResponse.json(
@@ -59,7 +54,6 @@ export async function POST(request) {
     }
 
     client = await pool.connect();
-    console.log('✅ Conectado ao banco!');
 
     const donoCheck = await client.query(
       'SELECT don_id FROM dono WHERE don_id = $1',
@@ -88,7 +82,6 @@ export async function POST(request) {
       ]
     );
 
-    console.log('✅ Notícia criada:', result.rows[0]);
 
     return NextResponse.json(
       {
@@ -99,7 +92,7 @@ export async function POST(request) {
     );
 
   } catch (error) {
-    console.error('❌ Erro ao criar notícia:', error);
+    console.error(' Erro ao criar notícia:', error);
     return NextResponse.json(
       { error: 'Erro ao criar notícia', details: error.message },
       { status: 500 }

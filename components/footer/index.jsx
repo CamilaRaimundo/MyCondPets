@@ -31,7 +31,7 @@ export function Footer() {
           });
         }
       } catch (error) {
-        console.error('❌ Erro ao carregar dados no Footer:', error);
+        console.error(' Erro ao carregar dados no Footer:', error);
       }
     };
 

@@ -22,7 +22,6 @@ export default function CriarNoticias() {
   const loadDonos = async () => {
     try {
       setLoadingDonos(true);
-      console.log('🔄 Carregando donos...');
 
       const response = await fetch('/api/donos');
 
@@ -32,11 +31,10 @@ export default function CriarNoticias() {
       }
 
       const data = await response.json();
-      console.log('✅ Donos carregados:', data);
       setDonos(data);
 
     } catch (error) {
-      console.error('❌ Erro ao carregar donos:', error);
+      console.error(' Erro ao carregar donos:', error);
       setMessage({
         type: 'error',
         text: 'Erro ao carregar lista de donos: ' + error.message
@@ -80,7 +78,6 @@ export default function CriarNoticias() {
     try {
       setLoading(true);
 
-      console.log('📤 Enviando notícia:', formData);
 
       const response = await fetch('/api/noticias', {
         method: 'POST',
@@ -91,7 +88,6 @@ export default function CriarNoticias() {
       });
 
       const data = await response.json();
-      console.log('📥 Resposta:', data);
 
       if (!response.ok) {
         throw new Error(data.details || data.error || 'Erro ao publicar notícia');
@@ -113,7 +109,7 @@ export default function CriarNoticias() {
       }, 2000);
 
     } catch (error) {
-      console.error('❌ Erro ao publicar notícia:', error);
+      console.error(' Erro ao publicar notícia:', error);
       setMessage({
         type: 'error',
         text: error.message

@@ -5,12 +5,10 @@ import pool from '../../_lib/db';
 // GET - Buscar todos os pets
 // ============================== 
 export async function GET() {
-  console.log('🔍 Buscando lista de pets...');
   let client;
 
   try {
     client = await pool.connect();
-    console.log('✅ Conectado ao banco!');
 
     // Busca todos os pets com informações do dono
     const result = await client.query(`
@@ -29,12 +27,11 @@ export async function GET() {
       ORDER BY p.pet_nome ASC
     `);
 
-    console.log(`✅ ${result.rows.length} pets encontrados`);
 
     return NextResponse.json(result.rows, { status: 200 });
 
   } catch (error) {
-    console.error('❌ Erro ao buscar pets:', error);
+    console.error(' Erro ao buscar pets:', error);
     console.error('Stack:', error.stack);
     
     return NextResponse.json(
