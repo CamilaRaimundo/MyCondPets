@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env TURBOPACK=0 NEXT_TELEMETRY_DISABLED=1 next dev",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest"
+    "lint": "next lint",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "dequal": "^2.0.3",

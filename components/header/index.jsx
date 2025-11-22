@@ -33,9 +33,10 @@ export function Header() {
         {session ? (
           <>
             <nav className="menu">
-              <Link href={'/'} className="navega-item">Notícias</Link>
+              <Link href={'/telaInicialCond'} className="navega-item">Tela Inicial (Condomínio)</Link>
+              <Link href={'/noticias'} className="navega-item">Notícias</Link>
               <Link href={'/perfilDono'} className="navega-item">Perfil</Link>
-              <Link href={'/'} className="navega-item">Pets</Link>
+              <Link href={'/pets'} className="navega-item">Pets</Link>
             </nav>
             <button className="logout-btn" onClick={() => signOut()}>Sair</button>
           </>
