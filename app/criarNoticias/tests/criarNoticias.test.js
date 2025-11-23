@@ -31,9 +31,6 @@ describe("CriarNoticias Component", () => {
     { don_id: "3", don_nome: "Pedro Oliveira" },
   ];
 
-  // Mock do window.location.href
-  let locationHrefMock = "";
-
   beforeAll(() => {
     // Simple mock of window.location without triggering jsdom navigation
     delete window.location;
@@ -45,7 +42,7 @@ describe("CriarNoticias Component", () => {
     jest.useRealTimers();
     window.location.href = ""; // Reseta a URL mockada antes de cada teste
 
-    // Mock padrão para carregar donos
+    // Mock padrão para carregar donos - SEMPRE retornar array
     global.fetch.mockResolvedValue({
       ok: true,
       json: async () => mockDonos,
@@ -165,6 +162,7 @@ describe("CriarNoticias Component", () => {
         expect(alert).toHaveTextContent(/Por favor, insira uma descrição/i);
       });
     });
+    
     it("deve validar dono não selecionado ao submeter", async () => {
       render(<CriarNoticias />);
       await waitForLoadingToFinish();
@@ -233,16 +231,22 @@ describe("CriarNoticias Component", () => {
 
   describe("Submissão de Formulário", () => {
     it("deve submeter formulário com sucesso", async () => {
-      global.fetch
-        .mockResolvedValueOnce({ ok: true, json: async () => mockDonos }) // Load
-        .mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({ success: true, id: "123" }),
-        }); // Submit
+      // Mock para carregar donos primeiro
+      global.fetch.mockResolvedValueOnce({ 
+        ok: true, 
+        json: async () => mockDonos 
+      });
 
       render(<CriarNoticias />);
       await waitForLoadingToFinish();
 
+      // Agora mock para a submissão
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ success: true, id: "123" }),
+      });
+
+      // Preencher formulário
       fireEvent.change(screen.getByLabelText(/Título da Notícia/i), {
         target: { value: "Golden perdido" },
       });
@@ -253,41 +257,46 @@ describe("CriarNoticias Component", () => {
         target: { value: "1" },
       });
 
-      const submitButton = screen.getByRole("button", {
-        name: /Publicar Notícia/i,
+      // Criar arquivo mock para o input file
+      const file = new File(["dummy"], "test.jpg", { type: "image/jpeg" });
+      const fileInput = screen.getByLabelText(/Foto da Notícia/i);
+      
+      Object.defineProperty(fileInput, "files", {
+        value: [file],
+        writable: false,
       });
+      fireEvent.change(fileInput);
+
+      const form = screen.getByRole("button", {
+        name: /Publicar Notícia/i,
+      }).closest("form");
 
       await act(async () => {
-        fireEvent.click(submitButton);
+        fireEvent.submit(form);
       });
 
       await waitFor(() => {
         expect(
-          screen.getByText("Notícia publicada com sucesso!")
+          screen.queryByText(/Notícia publicada com sucesso!/i)
         ).toBeInTheDocument();
-      });
+      }, { timeout: 5000 });
     });
 
     it("deve redirecionar após sucesso", async () => {
-      jest.useFakeTimers();
-
-      global.fetch
-        .mockResolvedValueOnce({ ok: true, json: async () => mockDonos })
-        .mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({ success: true }),
-        });
-
-      await act(async () => {
-        render(<CriarNoticias />);
+      // NÃO usar fake timers para este teste
+      // Mock para carregar donos
+      global.fetch.mockResolvedValueOnce({ 
+        ok: true, 
+        json: async () => mockDonos 
       });
 
-      await act(async () => {
-        jest.runAllTimers();
-      });
+      render(<CriarNoticias />);
+      await waitForLoadingToFinish();
 
-      await waitFor(() => {
-        expect(screen.queryByText("Carregando...")).not.toBeInTheDocument();
+      // Mock para submissão
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ success: true }),
       });
 
       fireEvent.change(screen.getByLabelText(/Título da Notícia/i), {
@@ -300,40 +309,37 @@ describe("CriarNoticias Component", () => {
         target: { value: "1" },
       });
 
-      const submitButton = screen.getByRole("button", {
-        name: /Publicar Notícia/i,
+      // Adicionar arquivo mock
+      const file = new File(["dummy"], "test.jpg", { type: "image/jpeg" });
+      const fileInput = screen.getByLabelText(/Foto da Notícia/i);
+      Object.defineProperty(fileInput, "files", {
+        value: [file],
+        writable: false,
       });
+      fireEvent.change(fileInput);
+
+      const form = screen.getByRole("button", {
+        name: /Publicar Notícia/i,
+      }).closest("form");
 
       await act(async () => {
-        fireEvent.click(submitButton);
+        fireEvent.submit(form);
       });
 
+      // Verificar que a mensagem de sucesso aparece
       await waitFor(() => {
         expect(
-          screen.getByText("Notícia publicada com sucesso!")
+          screen.queryByText(/Notícia publicada com sucesso!/i)
         ).toBeInTheDocument();
-      });
+      }, { timeout: 5000 });
 
-      // Verify that setTimeout was set (redirect logic will run after 2000ms)
-      // Note: We can't easily test window.location.href changes in jsdom
-      // so we're just verifying that the success state is reached
-      await act(async () => {
-        jest.advanceTimersByTime(2000);
-      });
-
-      // Success message should still be visible before redirect
-      // (redirect happens but jsdom doesn't support it)
-      expect(
-        screen.getByText("Notícia publicada com sucesso!")
-      ).toBeInTheDocument();
-
-      jest.useRealTimers();
+      // Nota: Não podemos testar o redirecionamento real no jsdom
+      // mas verificamos que o estado de sucesso foi atingido
     });
   });
 
   describe("Botão Cancelar", () => {
     it("deve voltar para página anterior ao clicar em cancelar", async () => {
-      // Mock fetch for loading donos
       global.fetch.mockResolvedValueOnce({
         ok: true,
         json: async () => mockDonos,

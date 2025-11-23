@@ -1,68 +1,42 @@
 "use client";
 
+import { useRef } from "react";
+import "./CSS/noticiasPage.css";
+
 export default function NoticiasCarousel({ noticias }) {
-  const handleScrollLeft = () => {
-    const container = document.querySelector(".noticias-carousel");
-    if (container) {
-      container.scrollBy({ left: -1200, behavior: "smooth" });
-    }
+  const carouselRef = useRef(null);
+
+  const scrollLeft = () => {
+    carouselRef.current?.scrollBy({ left: -1200, behavior: "smooth" });
   };
 
-  const handleScrollRight = () => {
-    const container = document.querySelector(".noticias-carousel");
-    if (container) {
-      container.scrollBy({ left: 1200, behavior: "smooth" });
-    }
+  const scrollRight = () => {
+    carouselRef.current?.scrollBy({ left: 1200, behavior: "smooth" });
   };
 
   return (
     <section className="carousel-section">
-      <button
-        className="carousel-button left"
-        onClick={handleScrollLeft}
-        aria-label="Rolar para esquerda"
-      >
-        ←
-      </button>
+      <button className="carousel-button left" onClick={scrollLeft}>←</button>
 
-      <div className="noticias-carousel">
+      <div className="noticias-carousel" ref={carouselRef}>
         {noticias.map((noticia) => (
-          <div key={noticia.id} className="noticia-card">
-            <div className="card-image-container">
-              <img
-                src={noticia.imagem}
-                alt={noticia.nome}
-                className="card-image"
-              />
-              <span
-                className={`status-badge ${
-                  noticia.status === "Perdido" ? "perdido" : "encontrado"
-                }`}
-              >
+          <div key={noticia.id} className="carousel-card">
+            <div className="carousel-image-container">
+              <img src={noticia.imagem} alt={noticia.titulo} />
+              <span className={`status-badge ${noticia.status.toLowerCase()}`}>
                 {noticia.status}
               </span>
             </div>
-            <div className="card-info">
-              <div className="info-row">
-                <span className="paw-icon">🐾</span>
-                <p className="pet-name">Nome: {noticia.nome}</p>
-              </div>
-              <div className="info-row">
-                <span className="phone-icon">📞</span>
-                <p className="pet-contact">Contato: {noticia.contato}</p>
-              </div>
+
+            <div className="carousel-info">
+              <p className="carousel-title">{noticia.titulo}</p>
+              <p className="carousel-contato">Contato: {noticia.contato}</p>
             </div>
           </div>
         ))}
       </div>
 
-      <button
-        className="carousel-button right"
-        onClick={handleScrollRight}
-        aria-label="Rolar para direita"
-      >
-        →
-      </button>
+      <button className="carousel-button right" onClick={scrollRight}>→</button>
     </section>
   );
 }

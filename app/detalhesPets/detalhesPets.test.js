@@ -1,4 +1,3 @@
-
 /**
  * @jest-environment jsdom
  */
@@ -59,7 +58,11 @@ describe("Página DetalhesPets", () => {
     render(<DetalhesPets />);
 
     expect(await screen.findByText("Totó")).toBeInTheDocument();
-    expect(screen.getByText("Raça: cachorro")).toBeInTheDocument();
+    
+    // Busca por texto dividido usando regex ou função matcher
+    expect(screen.getByText(/cachorro/i)).toBeInTheDocument();
+    expect(screen.getByText(/3 anos/i)).toBeInTheDocument();
+    expect(screen.getByText(/caramelo/i)).toBeInTheDocument();
   });
 
   test("exibe lista filtrada ao digitar na barra de pesquisa", async () => {
@@ -92,7 +95,11 @@ describe("Página DetalhesPets", () => {
     fireEvent.click(clickMel);
 
     expect(screen.getByText("Mel")).toBeInTheDocument();
-    expect(screen.getByText("Raça: gato")).toBeInTheDocument();
+    
+    // Busca por texto dividido usando regex
+    expect(screen.getByText(/gato/i)).toBeInTheDocument();
+    expect(screen.getByText(/2 anos/i)).toBeInTheDocument();
+    expect(screen.getByText(/preto/i)).toBeInTheDocument();
   });
 
   test("limpa pesquisa ao selecionar um pet", async () => {

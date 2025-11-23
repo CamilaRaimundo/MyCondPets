@@ -16,7 +16,7 @@
   justify-content: center;
   gap: 60px;
   flex-wrap: wrap;
-  padding: 2%;
+  /* padding: 2%; */
 }
 
 .text {

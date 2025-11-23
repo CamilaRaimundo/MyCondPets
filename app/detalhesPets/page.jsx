@@ -35,25 +35,23 @@ export default function DetalhesPets() {
     setSearch("");
   };
 
-
-
   return (
     <main className="container">
       {/* Lado esquerdo */}
       <div className="profile">
-        {/* <img src={selectedPet.foto} alt={selectedPet.nome} /> */}
-        {/* <pre>{JSON.stringify(selectedPet, null, 2)}</pre> */}
-        <img
-          src={selectedPet.foto ? selectedPet.foto : "/default-pet.png"}
+
+        {/* <img
+          src={selectedPet.foto || "/default-pet.png"}
           alt={selectedPet.nome}
-        />
+        /> */}
+
         <h2>{selectedPet.nome}</h2>
 
         <div className="info-box">
           <h3>Informações do Pet</h3>
-          <div className="info-item">🐾 <span>Raça: {selectedPet.raca}</span></div>
-          <div className="info-item">🎂 <span>Idade: {selectedPet.idade}</span></div>
-          <div className="info-item">🎨 <span>Cor: {selectedPet.cor}</span></div>
+          <div className="info-item">🐾 Raça: {selectedPet.raca}</div>
+          <div className="info-item">🎂 Idade: {selectedPet.idade}</div>
+          <div className="info-item">🎨 Cor: {selectedPet.cor}</div>
         </div>
 
         <div className="info-box">
@@ -67,6 +65,7 @@ export default function DetalhesPets() {
       {/* Lado direito */}
       <div className="search-section">
         <h3>Pesquisa</h3>
+
         <div className="search-bar">
           <input
             type="text"

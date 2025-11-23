@@ -24,12 +24,12 @@ export async function GET() {
         ON residencia.don_id = dono.don_id;
     `);
 
-    const pets = result.rows.map(row => {
-      return {
-        ...row,
-        foto: row.foto ? row.foto : null
-      };
-    });
+    const pets = result.rows.map(row => ({
+      ...row,
+      foto: row.foto && row.foto.data
+        ? Buffer.from(row.foto).toString() // caso ainda venha buffer
+        : row.foto ?? null
+    }));
 
     client.release();
 

@@ -1,23 +1,22 @@
-/* Estilos gerais da página */
+/* ================================
+   ESTILOS GERAIS DA PÁGINA
+================================ */
 .container {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #1e3a5f;
-  min-height: 100vh;
-  padding: 40px 20px;
-  background-color: #fef6f0;
+  background-color: #f0f0f0;
+  /* display: flex; */
+  flex-direction: column;
+  overflow-x: hidden;
+  min-width: 100%;
+  padding: 2%;
 }
 
-/* Seção do título */
+/* ================================
+   TÍTULO DA PÁGINA
+================================ */
 .header-section {
   text-align: center;
-  margin-bottom: 40px;
-}
-
-.title-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
 }
 
 .newspaper-icon {
@@ -28,10 +27,11 @@
   font-size: 56px;
   font-weight: bold;
   color: #1e3a5f;
-  margin: 0;
 }
 
-/* Seção do carrossel */
+/* ================================
+   SEÇÃO DO CARROSSEL
+================================ */
 .carousel-section {
   position: relative;
   max-width: 1400px;
@@ -39,55 +39,9 @@
   padding: 20px 60px;
 }
 
-/* Carrossel de notícias */
-.noticias-carousel {
-  display: grid;
-  grid-template-rows: repeat(2, auto);
-  grid-auto-flow: column;
-  grid-auto-columns: 380px;
-  gap: 40px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding: 20px 10px;
-  scrollbar-width: thin;
-  scrollbar-color: #a8d5cc #fef6f0;
-}
-
-.noticias-carousel::-webkit-scrollbar {
-  height: 10px;
-}
-
-.noticias-carousel::-webkit-scrollbar-track {
-  background: #fef6f0;
-  border-radius: 10px;
-}
-
-.noticias-carousel::-webkit-scrollbar-thumb {
-  background: #a8d5cc;
-  border-radius: 10px;
-}
-
-.noticias-carousel::-webkit-scrollbar-thumb:hover {
-  background: #8bc4ba;
-}
-
-/* Card de notícia */
-.noticia-card {
-  background-color: #a8d5cc;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  width: 100%;
-  height: 100%;
-}
-
-.noticia-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-}
-
-/* Botões do carrossel */
+/* ================================
+   BOTÕES DO CARROSSEL
+================================ */
 .carousel-button {
   position: absolute;
   top: 50%;
@@ -125,7 +79,60 @@
   right: 0;
 }
 
-/* Container da imagem */
+/* ================================
+   CARROSSEL
+================================ */
+.noticias-carousel {
+  display: grid;
+  grid-template-rows: auto;
+  grid-auto-flow: column;
+  grid-auto-columns: 380px;
+  gap: 40px;
+  overflow-x: auto;
+  padding: 20px 10px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #a8d5cc #fef6f0;
+}
+
+.noticias-carousel::-webkit-scrollbar {
+  height: 10px;
+}
+.noticias-carousel::-webkit-scrollbar-track {
+  background: #fef6f0;
+  border-radius: 10px;
+}
+.noticias-carousel::-webkit-scrollbar-thumb {
+  background: #a8d5cc;
+  border-radius: 10px;
+}
+.noticias-carousel::-webkit-scrollbar-thumb:hover {
+  background: #8bc4ba;
+}
+
+/* ================================
+   CARD DO CARROSSEL
+================================ */
+.carousel-card,
+.noticia-card {
+  background-color: #a8d5cc;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+}
+
+.carousel-card:hover,
+.noticia-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ================================
+   IMAGEM DO CARD
+================================ */
+.carousel-image-container,
 .card-image-container {
   position: relative;
   width: calc(100% - 30px);
@@ -136,6 +143,7 @@
   overflow: hidden;
 }
 
+.carousel-image-container img,
 .card-image {
   width: 100%;
   height: 100%;
@@ -143,7 +151,9 @@
   border-radius: 15px;
 }
 
-/* Badge de status */
+/* ================================
+   BADGE DE STATUS
+================================ */
 .status-badge {
   position: absolute;
   top: 15px;
@@ -164,9 +174,25 @@
   background-color: #51cf66;
 }
 
-/* Informações do card */
+/* ================================
+   INFORMAÇÕES DO CARD
+================================ */
+.carousel-info,
 .card-info {
-  padding: 20px 25px 25px;
+  padding: 20px;
+}
+
+.carousel-title,
+.pet-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #1e3a5f;
+}
+
+.carousel-contato,
+.pet-contact {
+  margin-top: 8px;
+  font-size: 16px;
 }
 
 .info-row {
@@ -176,24 +202,34 @@
   margin-bottom: 12px;
 }
 
-.info-row:last-child {
-  margin-bottom: 0;
-}
-
-.paw-icon,
-.phone-icon {
-  font-size: 24px;
-}
-
-.pet-name,
-.pet-contact {
-  margin: 0;
+/* ================================
+   ADICIONAR NOTÍCIAS 
+================================ */
+.add-noticia-btn {
+  display: inline-block;
+  background-color: #1e3a5f;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
   font-size: 18px;
   font-weight: 600;
-  color: #1e3a5f;
+  text-decoration: none;
+  margin-top: 20px;
+  transition: 0.3s ease;
 }
 
-/* Responsividade */
+.add-noticia-btn:hover {
+  background-color: #2d5a8f;
+  transform: scale(1.05);
+}
+
+.add-noticia-btn:active {
+  transform: scale(0.95);
+}
+
+/* ================================
+   RESPONSIVIDADE
+================================ */
 @media (max-width: 1024px) {
   .noticias-carousel {
     grid-auto-columns: 320px;
@@ -236,7 +272,6 @@
   }
 
   .noticias-carousel {
-    grid-template-rows: auto;
     grid-auto-columns: 250px;
     gap: 20px;
   }

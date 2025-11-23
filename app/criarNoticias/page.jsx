@@ -7,7 +7,8 @@ export default function CriarNoticias() {
   const [formData, setFormData] = useState({
     titulo: '',
     descricao: '',
-    donId: ''
+    donId: '',
+    foto: ''
   });
 
   const [donos, setDonos] = useState([]);
@@ -200,6 +201,30 @@ export default function CriarNoticias() {
               </span>
             </div>
 
+            <div className="form-group">
+              <label htmlFor="foto" className="form-label">Foto da Notícia *</label>
+              <input
+                type="file"
+                id="foto"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  const reader = new FileReader();
+
+                  reader.onloadend = () => {
+                    setFormData(prev => ({
+                      ...prev,
+                      foto: reader.result   // base64
+                    }));
+                  };
+
+                  if (file) reader.readAsDataURL(file);
+                }}
+                className="form-input"
+                required
+              />
+            </div>
+                
             <div className="form-group">
               <label htmlFor="donId" className="form-label">
                 Publicado por *

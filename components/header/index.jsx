@@ -16,11 +16,12 @@ export function Header() {
   }
 
   const perfilCompleto = session?.user?.perfilCompleto;
+  const isAdmin = session?.user?.email === "mycondpets@gmail.com";
 
   return (
     <div>
       <header className="header">
-        <Link href={'/'}>
+        <Link href="/">
           <img 
             src="../images/logo/logo_fundo-removebg.png" 
             alt="Logo MyCondPets" 
@@ -30,27 +31,31 @@ export function Header() {
 
         {session ? (
           <>
-            {perfilCompleto ? (
-              // Menu completo para usuários com perfil completo
+            {perfilCompleto || isAdmin ? (
               <nav className="menu">
-                <Link href={'/telaInicialCond'} className="navega-item">
-                  Tela Inicial (Condomínio)
-                </Link>
-                <Link href={'/noticias'} className="navega-item">
+
+                {/* Sempre aparece para quem tem perfil completo OU admin */}
+                <Link href="/noticias" className="navega-item">
                   Notícias
                 </Link>
-                <Link href={'/perfilDono'} className="navega-item">
+                <Link href="/perfilDono" className="navega-item">
                   Perfil
                 </Link>
-                <Link href={'/detalhesPets'} className="navega-item">
-                  Pets
-                </Link>
-                <Link href={'/cadastropet'} className="navega-item">
-                  Cadastrar Pet
-                </Link>
+
+                {/* Só aparece para admin */}
+                {isAdmin && (
+                  <>
+                    <Link href="/detalhesPets" className="navega-item">
+                      Pets
+                    </Link>
+                    <Link href="/telaInicialCond" className="navega-item">
+                      Dashboard
+                    </Link>
+                  </>
+                )}
+
               </nav>
             ) : (
-              // Aviso para usuários com perfil incompleto
               <div className="aviso-perfil">
                 <span className="aviso-texto">
                   <i className="fa-solid fa-circle-exclamation"></i>
@@ -58,13 +63,13 @@ export function Header() {
                 </span>
               </div>
             )}
-            
+
             <button className="logout-btn" onClick={() => signOut()}>
               Sair
             </button>
           </>
         ) : (
-          <Link className="login-btn" href={'/login'}>Login</Link>
+          <Link className="login-btn" href="/login">Login</Link>
         )}
       </header>
     </div>

@@ -30,6 +30,9 @@ body {
   text-align: center;
   padding: 40px;
   max-width: 600px;
+  min-height: 83.5vh;
+  align-items: center;
+  justify-content: center;
 }
 
 .number_404 {

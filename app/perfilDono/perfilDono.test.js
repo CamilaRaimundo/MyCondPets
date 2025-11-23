@@ -3,42 +3,48 @@
  */
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import Home from "./page";
 
 // ---------------------------
-// MOCKS
+// MOCKS - DECLARAR ANTES DAS IMPORTAÇÕES
 // ---------------------------
 
-// Mock do next-auth
+// 1. Mock do PerfilContent (NAMED EXPORT)
+jest.mock("./PerfilContent", () => ({
+  PerfilContent: function MockPerfilContent({ dono, pets, residencia }) {
+    return (
+      <div data-testid="perfil-content-mock">
+        <div data-testid="dono-nome">{dono?.don_nome || ""}</div>
+        <div data-testid="dono-email">{dono?.don_email || ""}</div>
+        <div data-testid="dono-contato">{dono?.don_contato || ""}</div>
+        <div data-testid="residencia">{residencia?.res_complemento || ""}</div>
+        <div data-testid="pets-count">{pets?.length || 0}</div>
+      </div>
+    );
+  }
+}));
+
+// 2. Mock do next-auth
 jest.mock("next-auth", () => ({
   getServerSession: jest.fn(),
 }));
 
-// Importa DEPOIS do mock
-const { getServerSession } = require("next-auth");
-
-// Mock do authOptions
-jest.mock("../api/auth/[...nextauth]/route", () => ({
+// 3. Mock do authOptions
+jest.mock("@/app/_lib/authOptions", () => ({
   authOptions: {},
 }));
 
-// Mock do redirect
+// 4. Mock do redirect
 jest.mock("next/navigation", () => ({
   redirect: jest.fn(),
 }));
 
-// Mock do componente PetsList
-jest.mock("./PetsList", () => ({
-  PetsList: (props) => <div data-testid="pets-list-mock">{JSON.stringify(props)}</div>,
-}));
-
-// Mock da conexão com banco
+// 5. Mock do banco de dados
 const mockClient = {
   query: jest.fn(),
   release: jest.fn(),
 };
 
-jest.mock("../_lib/db", () => ({
+jest.mock("@/app/_lib/db", () => ({
   __esModule: true,
   default: {
     connect: jest.fn(() => Promise.resolve(mockClient)),
@@ -46,19 +52,23 @@ jest.mock("../_lib/db", () => ({
 }));
 
 // ---------------------------
+// IMPORTAÇÕES DEPOIS DOS MOCKS
+// ---------------------------
+import Home from "./page";
+const { getServerSession } = require("next-auth");
+const { redirect } = require("next/navigation");
+
+// ---------------------------
 // TESTES
 // ---------------------------
-
-describe("Home Page", () => {
+describe("Home Page (Server Component)", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    // Reset do mockClient.query para cada teste
-    mockClient.query.mockReset();
-    mockClient.release.mockReset();
+    mockClient.query.mockClear();
+    mockClient.release.mockClear();
   });
 
   test("redireciona para /login quando não houver sessão", async () => {
-    const { redirect } = require("next/navigation");
     getServerSession.mockResolvedValueOnce(null);
 
     await Home();
@@ -67,14 +77,11 @@ describe("Home Page", () => {
   });
 
   test("renderiza dados do dono e pets corretamente", async () => {
-    // Simula sessão logada
     getServerSession.mockResolvedValue({
       user: { email: "teste@teste.com" },
     });
 
-    // Simula retorno das queries SQL
     mockClient.query
-      // 1ª chamada -> dono
       .mockResolvedValueOnce({
         rows: [
           {
@@ -86,40 +93,33 @@ describe("Home Page", () => {
           },
         ],
       })
-      // 2ª chamada -> pets
       .mockResolvedValueOnce({
         rows: [
-          { pet_nome: "Rex", pet_tipo: "Cachorro" },
-          { pet_nome: "Mimi", pet_tipo: "Gato" },
+          { pet_id: 1, pet_nome: "Rex", pet_tipo: "Cachorro" },
+          { pet_id: 2, pet_nome: "Mimi", pet_tipo: "Gato" },
         ],
       })
-      // 3ª chamada -> residência
       .mockResolvedValueOnce({
-        rows: [{ res_complemento: "Apt 21B" }],
+        rows: [{ res_id: 1, res_complemento: "Apt 21B" }],
       });
 
-    // Executa componente (Server Component)
     const ui = await Home();
-
-    // Renderiza o JSX retornado
     render(ui);
 
-    // Verifica campos
-    expect(screen.getByDisplayValue("João")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("teste@teste.com")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("Apt 21B")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("9999-9999")).toBeInTheDocument();
-
-    // Verifica renderização da lista mockada
-    expect(screen.getByTestId("pets-list-mock")).toBeInTheDocument();
+    expect(screen.getByTestId("perfil-content-mock")).toBeInTheDocument();
+    expect(screen.getByTestId("dono-nome")).toHaveTextContent("João");
+    expect(screen.getByTestId("dono-email")).toHaveTextContent("teste@teste.com");
+    expect(screen.getByTestId("dono-contato")).toHaveTextContent("9999-9999");
+    expect(screen.getByTestId("residencia")).toHaveTextContent("Apt 21B");
+    expect(screen.getByTestId("pets-count")).toHaveTextContent("2");
+    expect(mockClient.release).toHaveBeenCalled();
   });
 
-  test("mostra 'Dono não encontrado' se query não retornar dono", async () => {
+  test("mostra mensagem de erro quando não encontra dono", async () => {
     getServerSession.mockResolvedValue({
       user: { email: "teste@teste.com" },
     });
 
-    // primeira query (dono) retorna vazio
     mockClient.query.mockResolvedValueOnce({
       rows: [],
     });
@@ -127,22 +127,77 @@ describe("Home Page", () => {
     const ui = await Home();
     render(ui);
 
-    expect(screen.getByText("Dono não encontrado")).toBeInTheDocument();
+    const headingError = screen.getByRole("heading", { name: /dono não encontrado/i });
+    expect(headingError).toBeInTheDocument();
   });
 
-  test("exibe mensagem de erro quando não encontra dados do perfil", async () => {
+  test("libera conexão do banco mesmo em caso de erro", async () => {
     getServerSession.mockResolvedValue({
-      user: { email: "inexistente@teste.com" },
+      user: { email: "teste@teste.com" },
     });
 
-    // Query retorna vazio
-    mockClient.query.mockResolvedValueOnce({
-      rows: [],
+    mockClient.query.mockRejectedValueOnce(new Error("Erro no banco"));
+
+    try {
+      await Home();
+    } catch (error) {
+      // Erro esperado
+    }
+
+    expect(mockClient.release).toHaveBeenCalled();
+  });
+
+  test("trata caso onde pets é array vazio", async () => {
+    getServerSession.mockResolvedValue({
+      user: { email: "teste@teste.com" },
     });
+
+    mockClient.query
+      .mockResolvedValueOnce({
+        rows: [
+          {
+            don_id: 1,
+            don_nome: "João",
+            don_email: "teste@teste.com",
+            don_contato: "9999-9999",
+          },
+        ],
+      })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({
+        rows: [{ res_complemento: "Apt 21B" }],
+      });
 
     const ui = await Home();
     render(ui);
 
-    expect(screen.getByText("Não foi possível carregar os dados do perfil.")).toBeInTheDocument();
+    expect(screen.getByTestId("pets-count")).toHaveTextContent("0");
+  });
+
+  test("trata caso onde residência não existe", async () => {
+    getServerSession.mockResolvedValue({
+      user: { email: "teste@teste.com" },
+    });
+
+    mockClient.query
+      .mockResolvedValueOnce({
+        rows: [
+          {
+            don_id: 1,
+            don_nome: "João",
+            don_email: "teste@teste.com",
+          },
+        ],
+      })
+      .mockResolvedValueOnce({
+        rows: [{ pet_id: 1, pet_nome: "Rex" }],
+      })
+      .mockResolvedValueOnce({ rows: [] });
+
+    const ui = await Home();
+    render(ui);
+
+    const residencia = screen.getByTestId("residencia");
+    expect(residencia.textContent).toBe("");
   });
 });
