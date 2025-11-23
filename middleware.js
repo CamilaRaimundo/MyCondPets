@@ -37,7 +37,6 @@ export default withAuth(
         
         // Rotas públicas que não precisam de autenticação
         const rotasPublicas = [
-          "/",
           "/login",
           "/api/auth",
           "/_next",
@@ -45,8 +44,14 @@ export default withAuth(
           "/favicon.ico"
         ];
 
+        // Verifica se é a rota raiz exatamente
+        if (pathname === "/") {
+          return true;
+        }
+
+        // Verifica se começa com alguma rota pública
         const rotaPublica = rotasPublicas.some(rota => 
-          pathname === rota || pathname.startsWith(rota)
+          pathname.startsWith(rota)
         );
 
         // Permite acesso a rotas públicas
