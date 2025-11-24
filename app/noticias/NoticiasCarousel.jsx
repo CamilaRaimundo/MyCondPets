@@ -20,6 +20,7 @@ export default function NoticiasCarousel({ noticias }) {
 
       <div className="noticias-carousel" ref={carouselRef}>
         {noticias.map((noticia) => (
+          
           <div key={noticia.id} className="carousel-card">
             <div className="carousel-image-container">
               <img src={noticia.imagem} alt={noticia.titulo} />
