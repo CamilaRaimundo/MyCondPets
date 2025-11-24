@@ -1,6 +1,6 @@
 import pool from "@/app/_lib/db";
 import "./CSS/noticiasPage.css";
-import NoticiasCarousel from "./noticiasCarousel";
+import NoticiasCarousel from "./NoticiasCarousel";
 import Link from "next/link";
 
 export default async function Noticias() {
