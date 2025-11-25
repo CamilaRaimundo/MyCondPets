@@ -13,10 +13,10 @@
 }
 
 .image-container {
-  width: 30% !important;
+  width: 30%;
   min-height: 100vh !important;
-  justify-content: start !important;
-  align-items: start !important;
+  justify-content: start;
+  align-items: start;
 }
 
 
@@ -297,8 +297,9 @@
   
   .image-container {
     width: 100%;
-    min-height: 200px;
-    max-height: 250px;
+    min-height: 100vhx;
+    max-height: 100vh;
+    height: 100%;
   }
   
   .contentInfos {

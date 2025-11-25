@@ -14,9 +14,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 60px;
-  flex-wrap: wrap;
-  /* padding: 2%; */
+  flex-wrap: nowrap;
 }
 
 .text {
@@ -41,7 +39,7 @@
 }
 
 /* Imagem */
-.image-container {
+.image-container-home {
   width: 500px;
   height: 500px;
   border-radius: 50%;
@@ -57,7 +55,3 @@
   height: 100%;
   object-fit: cover;
 }
-
-
-
-

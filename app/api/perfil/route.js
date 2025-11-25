@@ -96,7 +96,7 @@ export async function PUT(request) {
     console.error("Erro ao atualizar perfil:", error);
     
     if (client) {
-      await client.query("ROLLBACK");
+      await client.query("ROLLBACK"); 
     }
     
     return NextResponse.json(

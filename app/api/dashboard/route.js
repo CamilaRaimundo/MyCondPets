@@ -37,8 +37,7 @@ export async function GET() {
       FROM residencia 
       JOIN pet ON pet.don_id = residencia.don_id;
     `);
-    
-    // OBJETO FINAL PARA O FRONT
+   
     const dashboard = {
       petsCadastrados: parseInt(totalPetsResult.rows[0].total_pets) || 0,
       petsPerdidos: parseInt(totalPetsPerdidosResult.rows[0].total_perdidos) || 0,

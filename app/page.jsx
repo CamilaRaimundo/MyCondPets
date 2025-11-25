@@ -14,7 +14,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="image-container">
+        <div className="image-container-home">
           <img src="../images/pet1.jpg" alt="Cachorro feliz" className="dog-image" />
         </div>
       </section>
